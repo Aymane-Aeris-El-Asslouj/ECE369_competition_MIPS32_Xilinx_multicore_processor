@@ -77,16 +77,29 @@ module Processor(Clk, Reset, out_PC, out_write_data, out_v0, out_v1);
     wire [31:0] MEM_ReadData;
     
     
-    wire [31:0] MEM_WB_ReadData;
-    wire [4:0] MEM_WB_WriteRegister;
-    wire [31:0] MEM_WB_ALUResult;
-    wire MEM_WB_RegWrite, MEM_WB_MemRead;
+    wire [31:0] MEM_SAD_ReadData;
+    wire [4:0] MEM_SAD_WriteRegister;
+    wire [31:0] MEM_SAD_ALUResult;
+    wire MEM_SAD_RegWrite, MEM_SAD_MemRead;
     
-    PipeReg #(32*2+5+2) MEM_WB(
+    PipeReg #(32*2+5+2) MEM_SAD(
         .Clk(Clk),.Reset(Reset),
         .stall(1'b0),
         .in({MEM_ReadData,EX_MEM_WriteRegister,EX_MEM_ALUResult,EX_MEM_RegWrite,EX_MEM_MemRead}),
-        .out({MEM_WB_ReadData,MEM_WB_WriteRegister,MEM_WB_ALUResult,MEM_WB_RegWrite,MEM_WB_MemRead})
+        .out({MEM_SAD_ReadData,MEM_SAD_WriteRegister,MEM_SAD_ALUResult,MEM_SAD_RegWrite,MEM_SAD_MemRead})
+    );
+    
+    wire [31:0] SAD_WB_ReadData;
+    wire [4:0] SAD_WB_WriteRegister;
+    wire [31:0] SAD_WB_ALUResult;
+    wire SAD_WB_RegWrite, SAD_WB_MemRead;
+    
+    
+    PipeReg #(32*2+5+2) SAD_WB(
+        .Clk(Clk),.Reset(Reset),
+        .stall(1'b0),
+        .in({MEM_SAD_ReadData,MEM_SAD_WriteRegister,MEM_SAD_ALUResult,MEM_SAD_RegWrite,MEM_SAD_MemRead}),
+        .out({SAD_WB_ReadData,SAD_WB_WriteRegister,SAD_WB_ALUResult,SAD_WB_RegWrite,SAD_WB_MemRead})
     );
     
     
@@ -110,14 +123,16 @@ module Processor(Clk, Reset, out_PC, out_write_data, out_v0, out_v1);
         .Clk(Clk),
         
         .WB_WriteData(WB_WriteData),
-        .MEM_WB_WriteRegister(MEM_WB_WriteRegister),
-        .MEM_WB_RegWrite(MEM_WB_RegWrite),
+        .MEM_WB_WriteRegister(SAD_WB_WriteRegister),
+        .MEM_WB_RegWrite(SAD_WB_RegWrite),
         .IF_ID_PC4(IF_ID_PC4),
         .IF_ID_Instruction(IF_ID_Instruction),
         .ID_EX_RegWrite(ID_EX_RegWrite),
         .EX_MEM_RegWrite(EX_MEM_RegWrite),
+        .MEM_SAD_RegWrite(MEM_SAD_RegWrite),
         .EX_WriteRegister(EX_WriteRegister),
         .EX_MEM_WriteRegister(EX_MEM_WriteRegister),
+        .MEM_SAD_WriteRegister(MEM_SAD_WriteRegister),
         
         .ID_rs_val(ID_rs_val),
         .ID_rt_val(ID_rt_val),
@@ -168,9 +183,9 @@ module Processor(Clk, Reset, out_PC, out_write_data, out_v0, out_v1);
     );
     
     WriteBackUnit p4(
-        .MEM_WB_ReadData(MEM_WB_ReadData),
-        .MEM_WB_ALUResult(MEM_WB_ALUResult),
-        .MEM_WB_MemtoReg(MEM_WB_MemRead),
+        .MEM_WB_ReadData(SAD_WB_ReadData),
+        .MEM_WB_ALUResult(SAD_WB_ALUResult),
+        .MEM_WB_MemtoReg(SAD_WB_MemRead),
         .WB_WriteData(WB_WriteData)
     );
     
@@ -178,7 +193,7 @@ module Processor(Clk, Reset, out_PC, out_write_data, out_v0, out_v1);
     
     always @(*) begin
     
-        if(MEM_WB_RegWrite)
+        if(SAD_WB_RegWrite)
             out_write_data <= WB_WriteData;
         else
             out_write_data <= 32'b0;
@@ -192,12 +207,12 @@ module Processor(Clk, Reset, out_PC, out_write_data, out_v0, out_v1);
     
     always@(posedge Clk) begin
     
-        if(MEM_WB_RegWrite) begin
+        if(SAD_WB_RegWrite) begin
         
-            if(MEM_WB_WriteRegister == 32'd2)
+            if(SAD_WB_WriteRegister == 32'd2)
                  out_v0 <= WB_WriteData;
         
-            if(MEM_WB_WriteRegister == 32'd3)
+            if(SAD_WB_WriteRegister == 32'd3)
                  out_v1 <= WB_WriteData;
         
         end

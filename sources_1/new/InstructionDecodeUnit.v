@@ -2,8 +2,8 @@
 `default_nettype none
 
 module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteRegister,
-                            MEM_WB_RegWrite, IF_ID_PC4, ID_EX_RegWrite, EX_MEM_RegWrite,
-                            EX_WriteRegister, EX_MEM_WriteRegister,
+                            MEM_WB_RegWrite, IF_ID_PC4, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_SAD_RegWrite,
+                            EX_WriteRegister, EX_MEM_WriteRegister, MEM_SAD_WriteRegister,
 
                             ID_rs_val, ID_rt_val, ID_ext_imm, ID_rt, ID_rd,
                             ID_shamt, ID_R, ID_ALUControl,
@@ -17,8 +17,8 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
     
     output wire ID_stall;
     
-    input wire ID_EX_RegWrite, EX_MEM_RegWrite;
-    input [4:0] EX_WriteRegister, EX_MEM_WriteRegister;
+    input wire ID_EX_RegWrite, EX_MEM_RegWrite, MEM_SAD_RegWrite;
+    input [4:0] EX_WriteRegister, EX_MEM_WriteRegister, MEM_SAD_WriteRegister;
     
     
     input [31:0] IF_ID_Instruction, WB_WriteData, IF_ID_PC4;
@@ -78,8 +78,10 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
         .CompareControl(CompareControl),
         .ID_EX_RegWrite(ID_EX_RegWrite),
         .EX_MEM_RegWrite(EX_MEM_RegWrite),
+        .MEM_SAD_RegWrite(MEM_SAD_RegWrite),
         .EX_WriteRegister(EX_WriteRegister),
         .EX_MEM_WriteRegister(EX_MEM_WriteRegister),
+        .MEM_SAD_WriteRegister(MEM_SAD_WriteRegister),
         .ID_stall(ID_stall)
     );
     

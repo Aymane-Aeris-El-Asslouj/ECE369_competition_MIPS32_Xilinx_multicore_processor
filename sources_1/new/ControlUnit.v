@@ -1,8 +1,8 @@
 `timescale 1ns / 1ps
 `default_nettype none
 
-module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite,
-                    EX_WriteRegister, EX_MEM_WriteRegister,
+module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_SAD_RegWrite,
+                    EX_WriteRegister, EX_MEM_WriteRegister, MEM_SAD_WriteRegister,
 
                     ID_ALUControl, ID_R, ID_RegWrite, ID_MemWrite,
                     ID_MemRead, ID_HalfControl, ID_ByteControl, branch,
@@ -163,14 +163,23 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite,
     // Hazard detection
     output wire ID_stall;
     
-    input wire ID_EX_RegWrite, EX_MEM_RegWrite;
-    input [4:0] EX_WriteRegister, EX_MEM_WriteRegister;
+    input wire ID_EX_RegWrite, EX_MEM_RegWrite, MEM_SAD_RegWrite;
+    input [4:0] EX_WriteRegister, EX_MEM_WriteRegister, MEM_SAD_WriteRegister;
     
     
-    assign ID_stall = ((rs != 5'b0) & ((ID_EX_RegWrite & (rs==EX_WriteRegister)) | 
-                        (EX_MEM_RegWrite & (rs==EX_MEM_WriteRegister))) & (~J))
-                 | ((rt != 5'b0) & ((ID_EX_RegWrite & (rt==EX_WriteRegister)) | 
-                        (EX_MEM_RegWrite & (rt==EX_MEM_WriteRegister))) &(ID_R | ID_MemWrite | equality_branch)) ;
+    assign ID_stall =   ((rs != 5'b0) 
+                         & (
+                        (ID_EX_RegWrite & (rs==EX_WriteRegister)) | 
+                        (EX_MEM_RegWrite & (rs==EX_MEM_WriteRegister))| 
+                        (MEM_SAD_RegWrite & (rs==MEM_SAD_WriteRegister))
+                        )& (~J))
+                        | ((rt != 5'b0) 
+                        & (
+                        (ID_EX_RegWrite & (rt==EX_WriteRegister)) | 
+                        (EX_MEM_RegWrite & (rt==EX_MEM_WriteRegister))| 
+                        (MEM_SAD_RegWrite & (rt==MEM_SAD_WriteRegister))
+                        )
+                         &(ID_R | ID_MemWrite | equality_branch)) ;
     
   
         

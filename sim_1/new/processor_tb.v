@@ -11,7 +11,7 @@ module processor_tb();
     wire [31:0] out_PC, out_v0, out_v1;
     wire signed [31:0] out_write_data;
 
-    //integer f,i;
+    integer f,i;
     
     
     Processor t0(
@@ -35,17 +35,17 @@ module processor_tb();
 	   @(posedge Clk) #1;
 	   Reset <= 0;
 	   
-//             f = $fopen("output.txt","w");
+             f = $fopen("output.txt","w");
        
        
-//           for (i = 0; i<427; i=i+1) begin
-//                @(posedge Clk) #1;
-//                if(out_write_data != 32'b0)
-//                  $fwrite(f,"%d\n", $signed(out_write_data));
-//       end
+           for (i = 0; i<427; i=i+1) begin
+                @(posedge Clk) #1;
+                if(out_write_data != 32'b0)
+                  $fwrite(f,"%d\n", $signed(out_write_data));
+       end
                
                
-//               $fclose(f);  
+               $fclose(f);  
 	   
 	end
 
