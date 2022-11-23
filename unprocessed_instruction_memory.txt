@@ -1,0 +1,49 @@
+34040000	//	main:		ori	$a0, $zero, 0 ->	main:		ori	$a0, $zero, 0
+34050010	//			ori	$a1, $zero, 16 ->			ori	$a1, $zero, 16
+34064010	//			ori	$a2, $zero, 16400 ->			ori	$a2, $zero, 16400
+0c000005	//			jal	vbsme ->			jal	vbsme
+08000004	//	self:		j	self ->	self:		j	self
+20020000	//	vbsme:		addi	$v0, $zero, 0 ->	vbsme:		addi	$v0, $zero, 0
+20030000	//			addi	$v1, $zero, 0 ->			addi	$v1, $zero, 0
+20100001	//			addi	$s0, $zero, 1 ->			addi	$s0, $zero, 1
+00108780	//			sll	$s0, $s0, 30 ->			sll	$s0, $s0, 30
+200a003c	//			addi	$t2, $zero, 60 ->			addi	$t2, $zero, 60
+200b0004	//			addi	$t3, $zero, 4 ->			addi	$t3, $zero, 4
+200c0040	//			addi	$t4, $zero, 64 ->			addi	$t4, $zero, 64
+20120000	//			addi	$s2, $zero, 0 ->			addi	$s2, $zero, 0
+20130000	//	FRAME_X:	addi	$s3, $zero, 0 ->	FRAME_X:	addi	$s3, $zero, 0
+20110000	//	FRAME_Y:	addi	$s1, $zero, 0 ->	FRAME_Y:	addi	$s1, $zero, 0
+20170000	//			addi	$s7, $zero, 0 ->			addi	$s7, $zero, 0
+20160000	//	WINDOW_Y:	addi	$s6, $zero, 0 ->	WINDOW_Y:	addi	$s6, $zero, 0
+71976802	//	WINDOW_X:	mul	$t5, $t4, $s7 ->	WINDOW_X:	mul	$t5, $t4, $s7
+01b66820	//			add	$t5, $t5, $s6 ->			add	$t5, $t5, $s6
+71937002	//			mul	$t6, $t4, $s3 ->			mul	$t6, $t4, $s3
+01ae6820	//			add	$t5, $t5, $t6 ->			add	$t5, $t5, $t6
+01b2a020	//			add	$s4, $t5, $s2 ->			add	$s4, $t5, $s2
+71776802	//			mul	$t5, $t3, $s7 ->			mul	$t5, $t3, $s7
+02cda820	//			add	$s5, $s6, $t5 ->			add	$s5, $s6, $t5
+0014a080	//			sll	$s4, $s4, 2 ->			sll	$s4, $s4, 2
+00b4c020	//			add	$t8, $a1, $s4 ->			add	$t8, $a1, $s4
+8f080000	//			lw	$t0, 0($t8) ->			lw	$t0, 0($t8)
+0015a880	//			sll	$s5, $s5, 2 ->			sll	$s5, $s5, 2
+00d5c020	//			add	$t8, $a2, $s5 ->			add	$t8, $a2, $s5
+8f090000	//			lw	$t1, 0($t8) ->			lw	$t1, 0($t8)
+0109c822	//			sub	$t9, $t0, $t1 ->			sub	$t9, $t0, $t1
+1f200002	//			bgtz	$t9, POS ->			bgtz	$t9, POS
+02398822	//			sub	$s1, $s1, $t9 ->			sub	$s1, $s1, $t9
+08000023	//			j	END ->			j	END
+02398820	//	POS:		add	$s1, $s1, $t9 ->	POS:		add	$s1, $s1, $t9
+22d60001	//	END:		addi	$s6, $s6, 1 ->	END:		addi	$s6, $s6, 1
+16cbffec	//			bne	$s6, $t3, WINDOW_X ->			bne	$s6, $t3, WINDOW_X
+22f70001	//			addi	$s7, $s7, 1 ->			addi	$s7, $s7, 1
+16ebffe9	//			bne	$s7, $t3, WINDOW_Y ->			bne	$s7, $t3, WINDOW_Y
+0230c822	//			sub	$t9, $s1, $s0 ->			sub	$t9, $s1, $s0
+07210003	//			bgez	$t9, SKIP ->			bgez	$t9, SKIP
+22300000	//			addi	$s0, $s1, 0 ->			addi	$s0, $s1, 0
+22620000	//			addi	$v0, $s3, 0 ->			addi	$v0, $s3, 0
+22430000	//			addi	$v1, $s2, 0 ->			addi	$v1, $s2, 0
+22730001	//	SKIP:		addi	$s3, $s3, 1 ->	SKIP:		addi	$s3, $s3, 1
+166affe0	//			bne	$s3, $t2, FRAME_Y ->			bne	$s3, $t2, FRAME_Y
+22520001	//			addi	$s2, $s2, 1 ->			addi	$s2, $s2, 1
+164affdd	//			bne	$s2, $t2, FRAME_X ->			bne	$s2, $t2, FRAME_X
+03e00008	//			jr	$ra ->			jr	$ra
