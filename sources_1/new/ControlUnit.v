@@ -3,6 +3,8 @@
 
 module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_SAD_RegWrite,
                     EX_WriteRegister, EX_MEM_WriteRegister, MEM_SAD_WriteRegister,
+                    
+                    ID_frame_shift, ID_window_shift,
 
                     ID_ALUControl, ID_R, ID_RegWrite, ID_MemWrite,
                     ID_MemRead, ID_HalfControl, ID_ByteControl, branch,
@@ -73,6 +75,10 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     
     localparam [5:0] JR_FUNCT = 6'b001000;
     
+    // SAD opcode
+    localparam [5:0] SAD_A_OPCODE = 6'b010100;
+    localparam [5:0] SAD_B_OPCODE = 6'b010110;
+    
     input [5:0] opcode, funct;
     input [4:0] rs, rt;
     
@@ -81,6 +87,8 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     output wire ID_HalfControl, ID_ByteControl, ID_JALControl;
     output reg [3:0] ID_ALUControl;
     output reg [2:0] CompareControl;
+    
+    output wire ID_frame_shift, ID_window_shift;
     
     wire strict_branch, equality_branch;
     wire special, jump;
@@ -113,6 +121,9 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
             SH_OPCODE: ID_ALUControl <= ADD;
             SB_OPCODE: ID_ALUControl <= ADD;
             
+            SAD_A_OPCODE: ID_ALUControl <= ADD;
+            SAD_B_OPCODE: ID_ALUControl <= ADD;
+            
             default: ID_ALUControl <= 4'bX;
         endcase
     end
@@ -133,6 +144,9 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     
     end
     
+    assign ID_frame_shift = (opcode == SAD_A_OPCODE);
+    assign ID_window_shift = (opcode == SAD_B_OPCODE);
+    
     assign special = (opcode == SPECIAL);
     
     assign ID_R = special | (opcode == SPECIAL2);
@@ -141,7 +155,7 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     assign ID_ByteControl = (opcode == SB_OPCODE) | (opcode == LB_OPCODE);
     
     assign ID_MemWrite = (opcode == SW_OPCODE) | (opcode == SH_OPCODE) | (opcode == SB_OPCODE);
-    assign ID_MemRead = (opcode == LW_OPCODE) | (opcode == LH_OPCODE) | (opcode == LB_OPCODE);
+    assign ID_MemRead = (opcode == LW_OPCODE) | (opcode == LH_OPCODE) | (opcode == LB_OPCODE) | ID_frame_shift | ID_window_shift;
     
     assign ID_JALControl = (opcode == JAL_OPCODE);
     
@@ -156,7 +170,6 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     assign force_branch = JR | J;
     
     assign ID_RegWrite = (~(ID_MemWrite | branch | force_branch)) | ID_JALControl;
-    
     
     
     
