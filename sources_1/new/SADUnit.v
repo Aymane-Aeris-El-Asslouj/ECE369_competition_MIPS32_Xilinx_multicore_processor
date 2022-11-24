@@ -8,7 +8,7 @@ module SADUnit(Clk, Reset, MEM_SAD_ReadData, frame_shift, window_shift, SAD_valu
     
     input wire frame_shift, window_shift;
     
-    wire [31:0] current_frame, current_window;
+    wire [127:0] current_frame, current_window;
     
     wire [31:0] K1, K2, K3, K4;
     output wire [31:0] SAD_value;

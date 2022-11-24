@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 `default_nettype none
 
-module DataMemory(EX_MEM_Address, EX_MEM_WriteData, Clk, EX_MEM_MemWrite, EX_MEM_MemRead,
+module Alternative_Memory(EX_MEM_Address, EX_MEM_WriteData, Clk, EX_MEM_MemWrite, EX_MEM_MemRead,
                 EX_MEM_HalfControl, EX_MEM_ByteControl,
 
                 MEM_ReadData); 
@@ -110,5 +110,70 @@ module DataMemory(EX_MEM_Address, EX_MEM_WriteData, Clk, EX_MEM_MemWrite, EX_MEM
             end
         end
     end
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+// 7 Series
+// Xilinx HDL Libraries Guide, version 2012.2
+//////////////////////////////////////////////////////////////////////////
+// DATA_WIDTH_A/B | BRAM_SIZE | RAM Depth | ADDRA/B Width | WEA/B Width //
+// ===============|===========|===========|===============|=============//
+// 19-36 | "36Kb" | 1024 | 10-bit | 4-bit //
+// 10-18 | "36Kb" | 2048 | 11-bit | 2-bit //
+// 10-18 | "18Kb" | 1024 | 10-bit | 2-bit //
+// 5-9 | "36Kb" | 4096 | 12-bit | 1-bit //
+// 5-9 | "18Kb" | 2048 | 11-bit | 1-bit //
+// 3-4 | "36Kb" | 8192 | 13-bit | 1-bit //
+// 3-4 | "18Kb" | 4096 | 12-bit | 1-bit //
+// 2 | "36Kb" | 16384 | 14-bit | 1-bit //
+// 2 | "18Kb" | 8192 | 13-bit | 1-bit //
+// 1 | "36Kb" | 32768 | 15-bit | 1-bit //
+// 1 | "18Kb" | 16384 | 14-bit | 1-bit //
+//////////////////////////////////////////////////////////////////////////
+//BRAM_TDP_MACRO #(
+//.BRAM_SIZE("36Kb"),
+//.DEVICE("7SERIES"),
+//.INIT_FILE ("NONE"),
+//.READ_WIDTH_A (32),
+//.READ_WIDTH_B (32),
+//.WRITE_WIDTH_A(32),
+//.WRITE_WIDTH_B(32)
+//) BRAM_TDP_MACRO_inst (
+//.DOA(ReadWordA),
+//.DOB(ReadWordB),
+//.ADDRA(EX_MEM_Address),
+//.ADDRB(EX_MEM_Address+1),
+//.CLKA(Clk),
+//.CLKB(~Clk),
+//.DIA(WriteWordA),
+//.DIB(WriteWordB),
+//.ENA(EX_MEM_MemRead | EX_MEM_MemWrite),
+//.ENB(EX_MEM_MemRead | EX_MEM_MemWrite),
+//.REGCEA(1'b0),
+//.REGCEB(1'b0),
+//.RSTA(1'b0),
+//.RSTB(1'b0),
+//.WEA(EX_MEM_MemWrite),
+//.WEB(EX_MEM_MemWrite)
+//);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 endmodule

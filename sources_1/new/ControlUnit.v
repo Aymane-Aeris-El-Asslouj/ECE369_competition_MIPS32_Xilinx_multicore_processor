@@ -144,8 +144,8 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     
     end
     
-    assign ID_frame_shift = (opcode == SAD_A_OPCODE);
-    assign ID_window_shift = (opcode == SAD_B_OPCODE);
+    assign ID_window_shift = (opcode == SAD_A_OPCODE);
+    assign ID_frame_shift = (opcode == SAD_B_OPCODE);
     
     assign special = (opcode == SPECIAL);
     

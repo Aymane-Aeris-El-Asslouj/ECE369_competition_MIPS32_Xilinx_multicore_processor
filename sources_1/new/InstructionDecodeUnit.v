@@ -132,13 +132,13 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
     
     
     always@(*) begin
-        if(MEM_WB_RegWrite & (MEM_WB_WriteRegister == rs))
+        if(MEM_WB_RegWrite & (MEM_WB_WriteRegister == rs) & (rs != 5'b0))
             bypass_rs_val <= WB_WriteData;
         else
             bypass_rs_val <= inner_rs_val;
             
         
-        if(MEM_WB_RegWrite & (MEM_WB_WriteRegister == rt))
+        if(MEM_WB_RegWrite & (MEM_WB_WriteRegister == rt) & (rt != 5'b0))
             bypass_rt_val <= WB_WriteData;
         else
             bypass_rt_val <= inner_rt_val;
