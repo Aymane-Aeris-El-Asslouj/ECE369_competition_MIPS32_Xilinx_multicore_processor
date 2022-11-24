@@ -3,27 +3,22 @@
 0c000004	//			jal	vbsme ->			jal	vbsme
 08000003	//	self:		j	self ->	self:		j	self
 200f003d	//	vbsme:		addi	$t7, $zero, 61 ->	vbsme:		addi	$t7, $zero, 61
-000f8480	//			sll	$s0, $t7, 18 ->			sll	$s0, $t7, 18
+000f7880	//			sll	$t7, $t7, 2 ->			sll	$t7, $t7, 2
+000f8400	//			sll	$s0, $t7, 16 ->			sll	$s0, $t7, 16
 50c00000	//			SAD_A	$zero, 0($a2) ->			SAD_A	$zero, 0($a2)
 50c00004	//			SAD_A	$zero, 4($a2) ->			SAD_A	$zero, 4($a2)
 50c00008	//			SAD_A	$zero, 8($a2) ->			SAD_A	$zero, 8($a2)
 50c0000c	//			SAD_A	$zero, 12($a2) ->			SAD_A	$zero, 12($a2)
-20120000	//			addi	$s2, $zero, 0 ->			addi	$s2, $zero, 0
-00b2b020	//	FRAME_X:	add	$s6, $a1, $s2 ->	FRAME_X:	add	$s6, $a1, $s2
-5ac00000	//			SAD_B	$zero, 0($s6) ->			SAD_B	$zero, 0($s6)
-5ac00040	//			SAD_B	$zero, 64($s6) ->			SAD_B	$zero, 64($s6)
-5ac00080	//			SAD_B	$zero, 128($s6) ->			SAD_B	$zero, 128($s6)
+58a00000	//			SAD_B	$zero, 0($a1) ->			SAD_B	$zero, 0($a1)
+58a00004	//			SAD_B	$zero, 4($a1) ->			SAD_B	$zero, 4($a1)
+58a00008	//			SAD_B	$zero, 8($a1) ->			SAD_B	$zero, 8($a1)
 20130000	//			addi	$s3, $zero, 0 ->			addi	$s3, $zero, 0
-0013c980	//	FRAME_Y:	sll	$t9, $s3, 6 ->	FRAME_Y:	sll	$t9, $s3, 6
-02d9c020	//			add	$t8, $s6, $t9 ->			add	$t8, $s6, $t9
-5b0800c0	//			SAD_B	$t0, 192($t8) ->			SAD_B	$t0, 192($t8)
+00b3c020	//	FRAME_Y:	add	$t8, $a1, $s3 ->	FRAME_Y:	add	$t8, $a1, $s3
+5b08000c	//			SAD_B	$t0, 12($t8) ->			SAD_B	$t0, 12($t8)
 0110c822	//			sub	$t9, $t0, $s0 ->			sub	$t9, $t0, $s0
-07210003	//			bgez	$t9, SKIP ->			bgez	$t9, SKIP
+07210002	//			bgez	$t9, SKIP ->			bgez	$t9, SKIP
 21100000	//			addi	$s0, $t0, 0 ->			addi	$s0, $t0, 0
 22620000	//			addi	$v0, $s3, 0 ->			addi	$v0, $s3, 0
-22430000	//			addi	$v1, $s2, 0 ->			addi	$v1, $s2, 0
-22730001	//	SKIP:		addi	$s3, $s3, 1 ->	SKIP:		addi	$s3, $s3, 1
-166ffff6	//			bne	$s3, $t7, FRAME_Y ->			bne	$s3, $t7, FRAME_Y
-22520001	//			addi	$s2, $s2, 1 ->			addi	$s2, $s2, 1
-164fffef	//			bne	$s2, $t7, FRAME_X ->			bne	$s2, $t7, FRAME_X
+22730004	//	SKIP:		addi	$s3, $s3, 4 ->	SKIP:		addi	$s3, $s3, 4
+166ffff8	//			bne	$s3, $t7, FRAME_Y ->			bne	$s3, $t7, FRAME_Y
 03e00008	//			jr	$ra ->			jr	$ra

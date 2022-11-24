@@ -5,6 +5,8 @@ module DataMemory(EX_MEM_Address, EX_MEM_WriteData, Clk, EX_MEM_MemWrite, EX_MEM
                 EX_MEM_HalfControl, EX_MEM_ByteControl,
 
                 MEM_ReadData); 
+    
+    parameter memory_file = "data";
 
     input [31:0] EX_MEM_Address; 	// Input Address 
     input [31:0] EX_MEM_WriteData; // Data that needs to be written into the address 
@@ -12,7 +14,7 @@ module DataMemory(EX_MEM_Address, EX_MEM_WriteData, Clk, EX_MEM_MemWrite, EX_MEM
     input wire EX_MEM_MemWrite, EX_MEM_MemRead, EX_MEM_HalfControl, EX_MEM_ByteControl; 
     integer i;              //used for indexing while initializing Memory array
     
-	reg [31:0] Memory[0:8191];
+	reg [31:0] Memory[0:127];
     
     output reg[31:0] MEM_ReadData; // Contents of memory location at Address
     
@@ -23,12 +25,12 @@ module DataMemory(EX_MEM_Address, EX_MEM_WriteData, Clk, EX_MEM_MemWrite, EX_MEM
     reg [15:0] HalfWord;
     reg [7:0] Byte;
     /* Please fill in the implementation here */
-    wire [12:0] core_address;
-    assign core_address = EX_MEM_Address[14:2];
+    wire [6:0] core_address;
+    assign core_address = EX_MEM_Address[8:2];
     
     initial begin
 
-        $readmemh("data_memory.mem", Memory);
+        $readmemh(memory_file, Memory);
             
     end
     

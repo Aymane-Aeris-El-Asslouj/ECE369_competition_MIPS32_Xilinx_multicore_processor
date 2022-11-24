@@ -9,6 +9,8 @@
 module Processor(input wire Clk, Reset,
                 output reg [31:0] out_v0, out_v1, out_write_data,
                 output wire [31:0] out_PC);
+                
+    parameter memory_file = "data";
 
     // IF outputs
     wire [31:0] IF_Instruction, IF_PC4;
@@ -180,7 +182,7 @@ module Processor(input wire Clk, Reset,
         .EX_WriteRegister(EX_WriteRegister)
     );
 
-    MemoryUnit p3(
+    MemoryUnit #(.memory_file(memory_file)) p3(
         .Clk(Clk),
         
         .EX_MEM_ALUResult(EX_MEM_ALUResult),
