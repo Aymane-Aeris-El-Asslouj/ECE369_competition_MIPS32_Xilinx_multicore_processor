@@ -6,7 +6,7 @@
 module PipeReg #(parameter WIDTH=1)(Clk, Reset, stall, in, out, flush);
     
     input wire Clk, Reset, stall, flush;
-    input [WIDTH-1:0] in;
+    input wire [WIDTH-1:0] in;
     
     output reg [WIDTH-1:0] out;
     

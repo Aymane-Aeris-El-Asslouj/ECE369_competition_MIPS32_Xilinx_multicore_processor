@@ -4,7 +4,7 @@
 module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_SAD_RegWrite,
                     EX_WriteRegister, EX_MEM_WriteRegister, MEM_SAD_WriteRegister,
                     
-                    ID_frame_shift, ID_window_shift,
+                    ID_frame_shift, ID_window_shift, ID_buff,
 
                     ID_ALUControl, ID_R, ID_RegWrite, ID_MemWrite,
                     ID_MemRead, ID_HalfControl, ID_ByteControl, branch,
@@ -51,6 +51,7 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     localparam [5:0] SLT_FUNCT = 6'b101010;    
     localparam [5:0] SLL_FUNCT = 6'b000000;  
     localparam [5:0] SRL_FUNCT = 6'b000010;
+    localparam [5:0] BUF_FUNCT = 6'b010101;
     
     // Memory opcode
     localparam [5:0] LW_OPCODE = 6'b100011;
@@ -88,7 +89,7 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     output reg [3:0] ID_ALUControl;
     output reg [2:0] CompareControl;
     
-    output wire ID_frame_shift, ID_window_shift;
+    output wire ID_frame_shift, ID_window_shift, ID_buff;
     
     wire strict_branch, equality_branch;
     wire special, jump;
@@ -148,6 +149,8 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     assign ID_frame_shift = (opcode == SAD_B_OPCODE);
     
     assign special = (opcode == SPECIAL);
+    
+    assign ID_buff = special &(funct == BUF_FUNCT);
     
     assign ID_R = special | (opcode == SPECIAL2);
     

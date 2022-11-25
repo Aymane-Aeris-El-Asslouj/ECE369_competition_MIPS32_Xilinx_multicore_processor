@@ -2,17 +2,16 @@
 34060000	//			ori	$a2, $zero, 0 ->			ori	$a2, $zero, 0
 0c000004	//			jal	vbsme ->			jal	vbsme
 08000003	//	self:		j	self ->	self:		j	self
-200f003d	//	vbsme:		addi	$t7, $zero, 61 ->	vbsme:		addi	$t7, $zero, 61
-000f7880	//			sll	$t7, $t7, 2 ->			sll	$t7, $t7, 2
-000f8400	//			sll	$s0, $t7, 16 ->			sll	$s0, $t7, 16
+200f00f4	//	vbsme:		addi	$t7, $zero, 244 ->	vbsme:		addi	$t7, $zero, 244
 50c00000	//			SAD_A	$zero, 0($a2) ->			SAD_A	$zero, 0($a2)
 50c00004	//			SAD_A	$zero, 4($a2) ->			SAD_A	$zero, 4($a2)
 50c00008	//			SAD_A	$zero, 8($a2) ->			SAD_A	$zero, 8($a2)
 50c0000c	//			SAD_A	$zero, 12($a2) ->			SAD_A	$zero, 12($a2)
+000f8400	//			sll	$s0, $t7, 16 ->			sll	$s0, $t7, 16
+20130000	//			addi	$s3, $zero, 0 ->			addi	$s3, $zero, 0
 58a00000	//			SAD_B	$zero, 0($a1) ->			SAD_B	$zero, 0($a1)
 58a00004	//			SAD_B	$zero, 4($a1) ->			SAD_B	$zero, 4($a1)
 58a00008	//			SAD_B	$zero, 8($a1) ->			SAD_B	$zero, 8($a1)
-20130000	//			addi	$s3, $zero, 0 ->			addi	$s3, $zero, 0
 00b3c020	//	FRAME_Y:	add	$t8, $a1, $s3 ->	FRAME_Y:	add	$t8, $a1, $s3
 5b08000c	//			SAD_B	$t0, 12($t8) ->			SAD_B	$t0, 12($t8)
 0110c822	//			sub	$t9, $t0, $s0 ->			sub	$t9, $t0, $s0
@@ -21,4 +20,5 @@
 22620000	//			addi	$v0, $s3, 0 ->			addi	$v0, $s3, 0
 22730004	//	SKIP:		addi	$s3, $s3, 4 ->	SKIP:		addi	$s3, $s3, 4
 166ffff8	//			bne	$s3, $t7, FRAME_Y ->			bne	$s3, $t7, FRAME_Y
+02020015	//			buf	$s0, $v0 ->			buf	$s0, $v0
 03e00008	//			jr	$ra ->			jr	$ra

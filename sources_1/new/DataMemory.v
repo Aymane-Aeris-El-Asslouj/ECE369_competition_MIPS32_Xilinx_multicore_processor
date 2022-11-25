@@ -6,7 +6,7 @@ module DataMemory(EX_MEM_Address, EX_MEM_WriteData, Clk, EX_MEM_MemWrite, EX_MEM
 
                 MEM_ReadData); 
     
-    parameter memory_file = "data";
+    parameter p_num = 0;
 
     input [31:0] EX_MEM_Address; 	// Input Address 
     input [31:0] EX_MEM_WriteData; // Data that needs to be written into the address 
@@ -28,9 +28,10 @@ module DataMemory(EX_MEM_Address, EX_MEM_WriteData, Clk, EX_MEM_MemWrite, EX_MEM
     wire [6:0] core_address;
     assign core_address = EX_MEM_Address[8:2];
     
+    reg [999:0] filename;
     initial begin
-
-        $readmemh(memory_file, Memory);
+        $sformat(filename, "data_memory_%0d.mem", p_num);
+        $readmemh(filename, Memory);
             
     end
     

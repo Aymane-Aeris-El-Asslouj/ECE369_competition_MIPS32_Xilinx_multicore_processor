@@ -7,7 +7,7 @@ module MemoryUnit(EX_MEM_ALUResult, EX_MEM_rt_val, Clk, EX_MEM_MemWrite, EX_MEM_
                 MEM_ReadData
     );
     
-    parameter memory_file = "data";
+    parameter p_num = 0;
     
     input wire Clk, EX_MEM_MemWrite, EX_MEM_MemRead, EX_MEM_HalfControl, EX_MEM_ByteControl;
     
@@ -16,7 +16,7 @@ module MemoryUnit(EX_MEM_ALUResult, EX_MEM_rt_val, Clk, EX_MEM_MemWrite, EX_MEM_
     
     output [31:0] MEM_ReadData;
     
-    DataMemory #(.memory_file(memory_file)) m0(
+    DataMemory #(.p_num(p_num)) m0(
         .EX_MEM_Address(EX_MEM_ALUResult),
         .EX_MEM_WriteData(EX_MEM_rt_val),
         .Clk(Clk),

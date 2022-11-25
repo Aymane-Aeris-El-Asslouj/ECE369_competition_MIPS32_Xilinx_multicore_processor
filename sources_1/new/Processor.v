@@ -8,9 +8,10 @@
 
 module Processor(input wire Clk, Reset,
                 output reg [31:0] out_v0, out_v1, out_write_data,
-                output wire [31:0] out_PC);
+                output wire [31:0] out_PC, buf_val_1, buf_val_2,
+                output wire buf_flag);
                 
-    parameter memory_file = "data";
+    parameter p_num = 0;
 
     // IF outputs
     wire [31:0] IF_Instruction, IF_PC4;
@@ -33,7 +34,7 @@ module Processor(input wire Clk, Reset,
     wire [3:0] ID_ALUControl;
     wire ID_R, ID_RegWrite, ID_MemWrite, ID_MemRead;
     wire ID_JALControl, ID_HalfControl, ID_ByteControl, ID_stall;
-    wire ID_frame_shift, ID_window_shift;
+    wire ID_frame_shift, ID_window_shift, ID_buff;
     
     wire [31:0] ID_new_PC;
     wire ID_PCSrc;
@@ -163,7 +164,8 @@ module Processor(input wire Clk, Reset,
         .ID_stall(ID_stall),
         
         .ID_frame_shift(ID_frame_shift),
-        .ID_window_shift(ID_window_shift)
+        .ID_window_shift(ID_window_shift),
+        .ID_buff(ID_buff)
     ); 
     
     ExecutionUnit p2(
@@ -182,7 +184,7 @@ module Processor(input wire Clk, Reset,
         .EX_WriteRegister(EX_WriteRegister)
     );
 
-    MemoryUnit #(.memory_file(memory_file)) p3(
+    MemoryUnit #(.p_num(p_num)) p3(
         .Clk(Clk),
         
         .EX_MEM_ALUResult(EX_MEM_ALUResult),
@@ -212,6 +214,15 @@ module Processor(input wire Clk, Reset,
         .frame_shift(SAD_WB_frame_shift),
         .WB_WriteData(WB_WriteData)
     );
+    
+    BufReg b1(.Clk(Clk),
+              .Reset(Reset),
+              .write(ID_buff),
+              .in_1(ID_rs_val),
+              .in_2(ID_rt_val),
+              .out_1(buf_val_1),
+              .out_2(buf_val_2),
+              .flag(buf_flag));
     
     assign out_PC = IF_PC4 - 4;
     
