@@ -42,6 +42,8 @@ vbsme:
         addi $s3, $s3, 4
     bne $s3, $t7, FRAME_Y
 
+    srl $v0, $v0, 2
+
     buf $s0, $v0
 
     jr $ra

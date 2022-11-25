@@ -4,17 +4,29 @@
 module MemoryUnit(EX_MEM_ALUResult, EX_MEM_rt_val, Clk, EX_MEM_MemWrite, EX_MEM_MemRead,
                 EX_MEM_HalfControl, EX_MEM_ByteControl, 
 
-                MEM_ReadData
+                MEM_ReadData,
+                
+                EX_MEM_load_buff_a, EX_MEM_load_buff_b,
+                buf_val_1_addr, buf_val_2_addr,
+                buf_val_1_select, buf_val_2_select
     );
     
     parameter p_num = 0;
     
     input wire Clk, EX_MEM_MemWrite, EX_MEM_MemRead, EX_MEM_HalfControl, EX_MEM_ByteControl;
     
+    input wire EX_MEM_load_buff_a, EX_MEM_load_buff_b;
+    
     input [31:0] EX_MEM_ALUResult;
     input [31:0] EX_MEM_rt_val;
     
-    output [31:0] MEM_ReadData;
+    wire [31:0] pseudo_ReadData;
+    
+    output reg [31:0] MEM_ReadData;
+    
+    
+    output wire [5:0] buf_val_1_addr, buf_val_2_addr;
+    input wire [31:0] buf_val_1_select, buf_val_2_select;
     
     DataMemory #(.p_num(p_num)) m0(
         .EX_MEM_Address(EX_MEM_ALUResult),
@@ -22,10 +34,23 @@ module MemoryUnit(EX_MEM_ALUResult, EX_MEM_rt_val, Clk, EX_MEM_MemWrite, EX_MEM_
         .Clk(Clk),
         .EX_MEM_MemWrite(EX_MEM_MemWrite),
         .EX_MEM_MemRead(EX_MEM_MemRead),
-        .MEM_ReadData(MEM_ReadData),
+        .MEM_ReadData(pseudo_ReadData),
         .EX_MEM_HalfControl(EX_MEM_HalfControl),
         .EX_MEM_ByteControl(EX_MEM_ByteControl)
     );
+    
+    assign buf_val_1_addr = EX_MEM_ALUResult[5:0];
+    assign buf_val_2_addr = EX_MEM_ALUResult[5:0];
+    
+    always@(*) begin
+        if (EX_MEM_load_buff_a) begin
+            MEM_ReadData <= buf_val_1_select;
+        end else if (EX_MEM_load_buff_b) begin
+            MEM_ReadData <= buf_val_2_select;
+        end else begin
+            MEM_ReadData <= pseudo_ReadData;
+        end
+    end
     
     
     

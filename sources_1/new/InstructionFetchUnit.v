@@ -4,6 +4,8 @@
 module InstructionFetchUnit(ID_PCSrc, Reset, Clk, ID_new_PC, ID_stall,
     
                             IF_Instruction, IF_PC4);
+                            
+    parameter instructions = "none.mem";
 
     input wire Clk, Reset, ID_PCSrc, ID_stall;
     input [31:0] ID_new_PC;
@@ -33,7 +35,7 @@ module InstructionFetchUnit(ID_PCSrc, Reset, Clk, ID_new_PC, ID_stall,
         .Clk(Clk)
     ); 
     
-    InstructionMemory id1(
+    InstructionMemory #(.instructions(instructions)) id1(
         .PC(PC),
         .IF_Instruction(IF_Instruction)
     ); 

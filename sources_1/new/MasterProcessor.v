@@ -6,18 +6,12 @@
 `default_nettype none
 
 
-module Processor(input wire Clk, Reset,
+module MasterProcessor(input wire Clk, Reset,
                 output reg [31:0] out_v0, out_v1, out_write_data,
                 output wire [31:0] out_PC, buf_val_1, buf_val_2,
-                output wire buf_flag,
-                
-            output wire [5:0] buf_val_1_addr, buf_val_2_addr,
-            input wire [31:0] buf_val_1_select, buf_val_2_select,
-            input wire all_buf_flags
-                );
+                output wire buf_flag);
                 
     parameter p_num = 0;
-    parameter instructions = "none.mem";
 
     // IF outputs
     wire [31:0] IF_Instruction, IF_PC4;
@@ -40,7 +34,7 @@ module Processor(input wire Clk, Reset,
     wire [3:0] ID_ALUControl;
     wire ID_R, ID_RegWrite, ID_MemWrite, ID_MemRead;
     wire ID_JALControl, ID_HalfControl, ID_ByteControl, ID_stall;
-    wire ID_frame_shift, ID_window_shift, ID_buff, ID_load_buff_a, ID_load_buff_b;
+    wire ID_frame_shift, ID_window_shift, ID_buff;
     
     wire [31:0] ID_new_PC;
     wire ID_PCSrc;
@@ -50,18 +44,17 @@ module Processor(input wire Clk, Reset,
     wire [3:0] ID_EX_ALUControl;
     wire ID_EX_R, ID_EX_RegWrite, ID_EX_MemWrite, ID_EX_MemRead;
     wire ID_EX_JALControl, ID_EX_HalfControl, ID_EX_ByteControl;
-    wire ID_EX_frame_shift, ID_EX_window_shift, ID_EX_load_buff_a, ID_EX_load_buff_b;
+    wire ID_EX_frame_shift, ID_EX_window_shift;
     
-    PipeReg #(32*4+5*3+4+7+2+2) ID_EX(
+    PipeReg #(32*4+5*3+4+7+2) ID_EX(
         .Clk(Clk),.Reset(Reset), 
         .stall(1'b0),
         .flush(ID_stall),
         .in({ID_JALControl, IF_ID_PC4,ID_rs_val,ID_rt_val,ID_ext_imm,ID_rt,ID_rd,ID_shamt,ID_ALUControl,ID_R,
-        ID_RegWrite,ID_MemWrite,ID_MemRead,ID_HalfControl,ID_ByteControl, ID_frame_shift, ID_window_shift,
-        ID_load_buff_a, ID_load_buff_b}),
+        ID_RegWrite,ID_MemWrite,ID_MemRead,ID_HalfControl,ID_ByteControl, ID_frame_shift, ID_window_shift}),
         .out({ID_EX_JALControl, ID_EX_PC4,ID_EX_rs_val,ID_EX_rt_val,ID_EX_ext_imm,ID_EX_rt,ID_EX_rd,ID_EX_shamt,ID_EX_ALUControl,
         ID_EX_R,ID_EX_RegWrite,ID_EX_MemWrite,ID_EX_MemRead,
-        ID_EX_HalfControl,ID_EX_ByteControl, ID_EX_frame_shift, ID_EX_window_shift, ID_EX_load_buff_a, ID_EX_load_buff_b})
+        ID_EX_HalfControl,ID_EX_ByteControl, ID_EX_frame_shift, ID_EX_window_shift})
     );
     
     
@@ -73,18 +66,14 @@ module Processor(input wire Clk, Reset,
     wire [4:0] EX_MEM_WriteRegister;
     wire EX_MEM_MemRead, EX_MEM_MemWrite, EX_MEM_HalfControl;
     wire EX_MEM_ByteControl, EX_MEM_RegWrite;
-    wire EX_MEM_frame_shift, EX_MEM_window_shift, EX_MEM_load_buff_a, EX_MEM_load_buff_b;
+    wire EX_MEM_frame_shift, EX_MEM_window_shift;
     
-    PipeReg #(5+32*2+5+2+2) EX_MEM(
+    PipeReg #(5+32*2+5+2) EX_MEM(
         .Clk(Clk),.Reset(Reset), 
         .stall(1'b0),
         .flush(1'b0),
-        .in({EX_WriteRegister,EX_ALUResult,ID_EX_rt_val,ID_EX_MemRead,ID_EX_MemWrite,ID_EX_HalfControl,
-        ID_EX_ByteControl,ID_EX_RegWrite, ID_EX_frame_shift, ID_EX_window_shift,
-        ID_EX_load_buff_a, ID_EX_load_buff_b}),
-        .out({EX_MEM_WriteRegister,EX_MEM_ALUResult,EX_MEM_rt_val,EX_MEM_MemRead,EX_MEM_MemWrite,
-        EX_MEM_HalfControl,EX_MEM_ByteControl,EX_MEM_RegWrite, EX_MEM_frame_shift, EX_MEM_window_shift,
-        EX_MEM_load_buff_a, EX_MEM_load_buff_b})
+        .in({EX_WriteRegister,EX_ALUResult,ID_EX_rt_val,ID_EX_MemRead,ID_EX_MemWrite,ID_EX_HalfControl,ID_EX_ByteControl,ID_EX_RegWrite, ID_EX_frame_shift, ID_EX_window_shift}),
+        .out({EX_MEM_WriteRegister,EX_MEM_ALUResult,EX_MEM_rt_val,EX_MEM_MemRead,EX_MEM_MemWrite,EX_MEM_HalfControl,EX_MEM_ByteControl,EX_MEM_RegWrite, EX_MEM_frame_shift, EX_MEM_window_shift})
     );
     
     // Memory
@@ -129,7 +118,7 @@ module Processor(input wire Clk, Reset,
     wire [31:0] WB_WriteData;
     
     
-    InstructionFetchUnit #(.instructions(instructions)) p0(
+    InstructionFetchUnit p0(
         .Clk(Clk),
         .Reset(Reset), 
         
@@ -176,11 +165,7 @@ module Processor(input wire Clk, Reset,
         
         .ID_frame_shift(ID_frame_shift),
         .ID_window_shift(ID_window_shift),
-        .ID_buff(ID_buff),
-        
-        .all_buf_flags(all_buf_flags),
-        .ID_load_buff_a(ID_load_buff_a),
-        .ID_load_buff_b(ID_load_buff_b)
+        .ID_buff(ID_buff)
     ); 
     
     ExecutionUnit p2(
@@ -209,13 +194,7 @@ module Processor(input wire Clk, Reset,
         .EX_MEM_HalfControl(EX_MEM_HalfControl),
         .EX_MEM_ByteControl(EX_MEM_ByteControl),
         
-        .MEM_ReadData(MEM_ReadData),
-        .EX_MEM_load_buff_a(EX_MEM_load_buff_a),
-        .EX_MEM_load_buff_b(EX_MEM_load_buff_b),
-        .buf_val_1_addr(buf_val_1_addr),
-        .buf_val_2_addr(buf_val_2_addr),
-        .buf_val_1_select(buf_val_1_select),
-        .buf_val_2_select(buf_val_2_select)
+        .MEM_ReadData(MEM_ReadData)
     );
     
     SADUnit p4(
@@ -237,7 +216,6 @@ module Processor(input wire Clk, Reset,
     );
     
     BufReg b1(.Clk(Clk),
-              .stall(ID_stall),
               .Reset(Reset),
               .write(ID_buff),
               .in_1(ID_rs_val),

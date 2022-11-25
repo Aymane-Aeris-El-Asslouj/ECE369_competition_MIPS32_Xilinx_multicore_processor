@@ -20,5 +20,6 @@
 22620000	//			addi	$v0, $s3, 0 ->			addi	$v0, $s3, 0
 22730004	//	SKIP:		addi	$s3, $s3, 4 ->	SKIP:		addi	$s3, $s3, 4
 166ffff8	//			bne	$s3, $t7, FRAME_Y ->			bne	$s3, $t7, FRAME_Y
+00021082	//			srl	$v0, $v0, 2 ->			srl	$v0, $v0, 2
 02020015	//			buf	$s0, $v0 ->			buf	$s0, $v0
 03e00008	//			jr	$ra ->			jr	$ra
