@@ -1,0 +1,21 @@
+0c000002	//	main:		jal	vbsme_master ->	main:		jal	vbsme_master
+08000001	//	self:		j	self ->	self:		j	self
+00000017	//	vbsme_master:	abuf	$zero ->	vbsme_master:	abuf	$zero
+20020000	//			addi	$v0, $zero, 0 ->			addi	$v0, $zero, 0
+4c080000	//			lbufa	$t0, 0($zero) ->			lbufa	$t0, 0($zero)
+200d0000	//			addi	$t5, $zero, 0 ->			addi	$t5, $zero, 0
+200e001e	//			addi	$t6, $zero, 30 ->			addi	$t6, $zero, 30
+4da90000	//	START:		lbufa	$t1, 0($t5) ->	START:		lbufa	$t1, 0($t5)
+01285022	//			sub	$t2, $t1, $t0 ->			sub	$t2, $t1, $t0
+05410002	//			bgez	$t2, NOTMIN ->			bgez	$t2, NOTMIN
+21280000	//			addi	$t0, $t1, 0 ->			addi	$t0, $t1, 0
+21a20000	//			addi	$v0, $t5, 0 ->			addi	$v0, $t5, 0
+21ad0001	//	NOTMIN:		addi	$t5, $t5, 1 ->	NOTMIN:		addi	$t5, $t5, 1
+15aefff9	//			bne	$t5, $t6, START ->			bne	$t5, $t6, START
+cc430000	//			lbufb	$v1, 0($v0) ->			lbufb	$v1, 0($v0)
+00021040	//			sll	$v0, $v0, 1 ->			sll	$v0, $v0, 1
+0003c982	//			srl	$t9, $v1, 6 ->			srl	$t9, $v1, 6
+00591020	//			add	$v0, $v0, $t9 ->			add	$v0, $v0, $t9
+0019c980	//			sll	$t9, $t9, 6 ->			sll	$t9, $t9, 6
+00791822	//			sub	$v1, $v1, $t9 ->			sub	$v1, $v1, $t9
+03e00008	//			jr	$ra ->			jr	$ra

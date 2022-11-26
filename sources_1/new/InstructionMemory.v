@@ -5,17 +5,13 @@ module InstructionMemory(PC, IF_Instruction);
 
     parameter instructions = "none.mem";
 
-    input [31:0] PC;        // Input Address 
+    input wire [31:0] PC;        // Input Address 
 
-    output [31:0] IF_Instruction;    // Instruction at memory location Address
+    output wire [31:0] IF_Instruction;    // Instruction at memory location Address
     
     reg [31:0] memory [0:127];
     
-    wire [13:0] word_address;
-    
-    assign word_address = PC[8:2];
-    
-    assign IF_Instruction = memory[word_address];
+    assign IF_Instruction = memory[PC[8:2]];
     
     
     initial begin

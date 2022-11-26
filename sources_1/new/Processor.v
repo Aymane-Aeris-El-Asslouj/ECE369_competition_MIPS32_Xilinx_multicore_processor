@@ -11,12 +11,12 @@ module Processor(input wire Clk, Reset,
                 output wire [31:0] out_PC, buf_val_1, buf_val_2,
                 output wire buf_flag,
                 
-            output wire [5:0] buf_val_1_addr, buf_val_2_addr,
+            output wire [4:0] buf_val_1_addr, buf_val_2_addr,
             input wire [31:0] buf_val_1_select, buf_val_2_select,
             input wire all_buf_flags
                 );
                 
-    parameter p_num = 0;
+    parameter memories = "none_2.mem";
     parameter instructions = "none.mem";
 
     // IF outputs
@@ -199,7 +199,7 @@ module Processor(input wire Clk, Reset,
         .EX_WriteRegister(EX_WriteRegister)
     );
 
-    MemoryUnit #(.p_num(p_num)) p3(
+    MemoryUnit #(.memories(memories)) p3(
         .Clk(Clk),
         
         .EX_MEM_ALUResult(EX_MEM_ALUResult),

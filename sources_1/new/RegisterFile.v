@@ -12,23 +12,19 @@ module RegisterFile(rs, rt, MEM_WB_WriteRegister, WB_WriteData, MEM_WB_RegWrite,
 	reg [31:0] regFile [31:0]; 
 	
 	
-	output reg [31:0] inner_rs_val, inner_rt_val; 
+	output wire [31:0] inner_rs_val, inner_rt_val; 
 	
     always@(posedge Clk) begin
-	   if(MEM_WB_RegWrite && (MEM_WB_WriteRegister != 0)) begin
+	   if(MEM_WB_RegWrite && (MEM_WB_WriteRegister != 5'b0)) begin
 	       regFile[MEM_WB_WriteRegister] <= WB_WriteData; 
 	   end
 	end
 	
-	always@(negedge Clk) begin
-	   if(rs != 0)
-	       inner_rs_val <= regFile[rs]; 
-	   else
-	       inner_rs_val <= 32'b0;
-	   if(rt != 0)
-	       inner_rt_val <= regFile[rt]; 
-	   else
-	       inner_rt_val <= 32'b0;
+	initial begin
+	   regFile[0] = 32'b0;
 	end
+	
+	assign inner_rs_val = regFile[rs]; 
+	assign inner_rt_val = regFile[rt]; 
 
 endmodule

@@ -10,12 +10,13 @@ module SADUnit(Clk, Reset, MEM_SAD_ReadData, frame_shift, window_shift, SAD_valu
     
     wire [127:0] current_frame, current_window;
     
-    wire [31:0] K1, K2, K3, K4;
+    wire [9:0] K1, K2, K3, K4;
     output wire [31:0] SAD_value;
+    wire [12:0] SAD_value_small;
 
     ShiftRegister frame(
         .Clk(Clk),
-        .Reset(Reset),
+        //.Reset(Reset),
         .shift_in(frame_shift),
         .in(MEM_SAD_ReadData),
         .out(current_frame)
@@ -23,7 +24,7 @@ module SADUnit(Clk, Reset, MEM_SAD_ReadData, frame_shift, window_shift, SAD_valu
 
     ShiftRegister window(
         .Clk(Clk),
-        .Reset(Reset),
+        //.Reset(Reset),
         .shift_in(window_shift),
         .in(MEM_SAD_ReadData),
         .out(current_window)
@@ -49,7 +50,8 @@ module SADUnit(Clk, Reset, MEM_SAD_ReadData, frame_shift, window_shift, SAD_valu
      .B(current_frame[63:32]),
      .out(K4));
     
-    assign SAD_value = K1 + K2 + K3 + K4;
+    assign SAD_value_small = K1 + K2 + K3 + K4;
+    assign SAD_value = {{19{SAD_value_small[12]}}, SAD_value_small};
     
     
 endmodule

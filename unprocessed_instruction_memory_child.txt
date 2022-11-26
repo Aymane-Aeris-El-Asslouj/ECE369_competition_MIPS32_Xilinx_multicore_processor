@@ -1,0 +1,37 @@
+34050010	//	main:		ori	$a1, $zero, 16 ->	main:		ori	$a1, $zero, 16
+34060000	//			ori	$a2, $zero, 0 ->			ori	$a2, $zero, 0
+0c000004	//			jal	vbsme ->			jal	vbsme
+08000003	//	self:		j	self ->	self:		j	self
+200f00f4	//	vbsme:		addi	$t7, $zero, 244 ->	vbsme:		addi	$t7, $zero, 244
+50c00000	//			SAD_A	$zero, 0($a2) ->			SAD_A	$zero, 0($a2)
+50c00004	//			SAD_A	$zero, 4($a2) ->			SAD_A	$zero, 4($a2)
+50c00008	//			SAD_A	$zero, 8($a2) ->			SAD_A	$zero, 8($a2)
+50c0000c	//			SAD_A	$zero, 12($a2) ->			SAD_A	$zero, 12($a2)
+000f8400	//			sll	$s0, $t7, 16 ->			sll	$s0, $t7, 16
+20130000	//			addi	$s3, $zero, 0 ->			addi	$s3, $zero, 0
+58a00000	//			SAD_B	$zero, 0($a1) ->			SAD_B	$zero, 0($a1)
+58a00004	//			SAD_B	$zero, 4($a1) ->			SAD_B	$zero, 4($a1)
+58a00008	//			SAD_B	$zero, 8($a1) ->			SAD_B	$zero, 8($a1)
+00b3c020	//	FRAME_Y1:	add	$t8, $a1, $s3 ->	FRAME_Y1:	add	$t8, $a1, $s3
+5b08000c	//			SAD_B	$t0, 12($t8) ->			SAD_B	$t0, 12($t8)
+0110c822	//			sub	$t9, $t0, $s0 ->			sub	$t9, $t0, $s0
+07210002	//			bgez	$t9, SKIP1 ->			bgez	$t9, SKIP1
+21100000	//			addi	$s0, $t0, 0 ->			addi	$s0, $t0, 0
+00131082	//			srl	$v0, $s3, 2 ->			srl	$v0, $s3, 2
+22730004	//	SKIP1:		addi	$s3, $s3, 4 ->	SKIP1:		addi	$s3, $s3, 4
+166ffff8	//			bne	$s3, $t7, FRAME_Y1 ->			bne	$s3, $t7, FRAME_Y1
+20130000	//			addi	$s3, $zero, 0 ->			addi	$s3, $zero, 0
+58a00100	//			SAD_B	$zero, 256($a1) ->			SAD_B	$zero, 256($a1)
+58a00104	//			SAD_B	$zero, 260($a1) ->			SAD_B	$zero, 260($a1)
+58a00108	//			SAD_B	$zero, 264($a1) ->			SAD_B	$zero, 264($a1)
+00b3c020	//	FRAME_Y2:	add	$t8, $a1, $s3 ->	FRAME_Y2:	add	$t8, $a1, $s3
+5b08010c	//			SAD_B	$t0, 268($t8) ->			SAD_B	$t0, 268($t8)
+0110c822	//			sub	$t9, $t0, $s0 ->			sub	$t9, $t0, $s0
+07210003	//			bgez	$t9, SKIP2 ->			bgez	$t9, SKIP2
+21100000	//			addi	$s0, $t0, 0 ->			addi	$s0, $t0, 0
+00131082	//			srl	$v0, $s3, 2 ->			srl	$v0, $s3, 2
+20420040	//			addi	$v0, $v0, 64 ->			addi	$v0, $v0, 64
+22730004	//	SKIP2:		addi	$s3, $s3, 4 ->	SKIP2:		addi	$s3, $s3, 4
+166ffff7	//			bne	$s3, $t7, FRAME_Y2 ->			bne	$s3, $t7, FRAME_Y2
+02020015	//			buf	$s0, $v0 ->			buf	$s0, $v0
+03e00008	//			jr	$ra ->			jr	$ra
