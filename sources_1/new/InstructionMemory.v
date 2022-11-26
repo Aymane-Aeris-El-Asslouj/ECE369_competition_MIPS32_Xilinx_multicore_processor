@@ -9,9 +9,9 @@ module InstructionMemory(PC, IF_Instruction);
 
     output wire [31:0] IF_Instruction;    // Instruction at memory location Address
     
-    reg [31:0] memory [0:127];
+    reg [31:0] memory [0:255];
     
-    assign IF_Instruction = memory[PC[8:2]];
+    assign IF_Instruction = memory[PC[9:2]];
     
     
     initial begin

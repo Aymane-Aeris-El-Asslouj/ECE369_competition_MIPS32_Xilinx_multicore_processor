@@ -2,16 +2,16 @@
 `default_nettype none
 
 module WriteBackUnit(MEM_WB_ReadData, MEM_WB_ALUResult, MEM_WB_MemtoReg, SAD_WB_value, WB_WriteData,
-    frame_shift
+    load_min_tag
     );
     
     input [31:0] MEM_WB_ReadData, MEM_WB_ALUResult, SAD_WB_value;
-    input wire MEM_WB_MemtoReg, frame_shift;
+    input wire MEM_WB_MemtoReg, load_min_tag;
     
     output reg [31:0] WB_WriteData;
     
     always@(*) begin
-        case(frame_shift)
+        case(load_min_tag)
             1'b0: 
                 case (MEM_WB_MemtoReg)
                     1'b0: WB_WriteData <= MEM_WB_ALUResult;

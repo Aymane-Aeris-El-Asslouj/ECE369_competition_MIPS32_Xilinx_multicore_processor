@@ -1,18 +1,23 @@
 `timescale 1ns / 1ps
 `default_nettype none
 
-module SADUnit(Clk, Reset, MEM_SAD_ReadData, frame_shift, window_shift, SAD_value);
+module SADUnit(Clk, Reset, MEM_SAD_ReadData, frame_shift, window_shift, min_in, SAD_value, MEM_SAD_ALUResult, load_min);
 
     input wire Clk, Reset;
-    input [31:0] MEM_SAD_ReadData;
+    input wire [31:0] MEM_SAD_ReadData, MEM_SAD_ALUResult;
     
-    input wire frame_shift, window_shift;
+    input wire frame_shift, window_shift, min_in, load_min;
     
     wire [127:0] current_frame, current_window;
     
     wire [9:0] K1, K2, K3, K4;
-    output wire [31:0] SAD_value;
+    output reg [31:0] SAD_value;
+    
+    wire [31:0] min_stored, out_tag;
     wire [12:0] SAD_value_small;
+    wire [12:0] out_stored;
+    
+    wire smaller;
 
     ShiftRegister frame(
         .Clk(Clk),
@@ -51,7 +56,25 @@ module SADUnit(Clk, Reset, MEM_SAD_ReadData, frame_shift, window_shift, SAD_valu
      .out(K4));
     
     assign SAD_value_small = K1 + K2 + K3 + K4;
-    assign SAD_value = {{19{SAD_value_small[12]}}, SAD_value_small};
+    
+    always @(*) begin
+        if(load_min) begin
+            SAD_value <= {{19{1'b0}}, out_stored};
+        end else begin
+            SAD_value <= out_tag;
+        end
+    end
+    
+    MinRegister mr(
+            .Clk(Clk),
+            .min_in(min_in),
+            .max_out(Reset),
+            .in(SAD_value_small),
+            .out_smaller(smaller),
+            .out_stored(out_stored),
+            .tag(MEM_SAD_ALUResult),
+            .out_tag(out_tag)
+            );
     
     
 endmodule

@@ -1,52 +1,143 @@
-34050010	//	main:		ori	$a1, $zero, 16 ->	main:		ori	$a1, $zero, 16
-34060000	//			ori	$a2, $zero, 0 ->			ori	$a2, $zero, 0
-0c000006	//			jal	vbsme ->			jal	vbsme
-00000000	//			nop ->			nop
-08000004	//	self:		j	self ->	self:		j	self
-00000000	//			nop ->			nop
-201100f4	//	vbsme:		addi	$s1, $zero, 244 ->	vbsme:		addi	$s1, $zero, 244
-2018012c	//			addi	$t8, $zero, 300 ->			addi	$t8, $zero, 300
-74c00000	//			SAD_A	$zero, 0($a2) ->			SAD_A	$zero, 0($a2)
-74c00004	//			SAD_A	$zero, 4($a2) ->			SAD_A	$zero, 4($a2)
-74c00008	//			SAD_A	$zero, 8($a2) ->			SAD_A	$zero, 8($a2)
-74c0000c	//			SAD_A	$zero, 12($a2) ->			SAD_A	$zero, 12($a2)
-00118400	//			sll	$s0, $s1, 16 ->			sll	$s0, $s1, 16
-02258820	//			add	$s1, $s1, $a1 ->			add	$s1, $s1, $a1
-0000c820	//			add	$t9, $zero, $zero ->			add	$t9, $zero, $zero
-00b99020	//	BACK_START:	add	$s2, $a1, $t9 ->	BACK_START:	add	$s2, $a1, $t9
-02398820	//			add	$s1, $s1, $t9 ->			add	$s1, $s1, $t9
-5a400000	//			SAD_B	$zero, 0($s2) ->			SAD_B	$zero, 0($s2)
-5a400004	//			SAD_B	$zero, 4($s2) ->			SAD_B	$zero, 4($s2)
-5a400008	//			SAD_B	$zero, 8($s2) ->			SAD_B	$zero, 8($s2)
-5a48000c	//			SAD_B	$t0, 12($s2) ->			SAD_B	$t0, 12($s2)
-5a490010	//			SAD_B	$t1, 16($s2) ->			SAD_B	$t1, 16($s2)
-5a4a0014	//			SAD_B	$t2, 20($s2) ->			SAD_B	$t2, 20($s2)
-52080003	//	FRAME_Y1:	blt	$s0, $t0, SKIPA1 ->	FRAME_Y1:	blt	$s0, $t0, SKIPA1
-5a4b0018	//			SAD_B	$t3, 24($s2) ->			SAD_B	$t3, 24($s2)
-21100000	//			addi	$s0, $t0, 0 ->			addi	$s0, $t0, 0
-22420000	//			addi	$v0, $s2, 0 ->			addi	$v0, $s2, 0
-52090003	//	SKIPA1:		blt	$s0, $t1, SKIPA2 ->	SKIPA1:		blt	$s0, $t1, SKIPA2
-5a48001c	//			SAD_B	$t0, 28($s2) ->			SAD_B	$t0, 28($s2)
-21300000	//			addi	$s0, $t1, 0 ->			addi	$s0, $t1, 0
-22420004	//			addi	$v0, $s2, 4 ->			addi	$v0, $s2, 4
-520a0003	//	SKIPA2:		blt	$s0, $t2, SKIPA3 ->	SKIPA2:		blt	$s0, $t2, SKIPA3
-5a490020	//			SAD_B	$t1, 32($s2) ->			SAD_B	$t1, 32($s2)
-21500000	//			addi	$s0, $t2, 0 ->			addi	$s0, $t2, 0
-22420008	//			addi	$v0, $s2, 8 ->			addi	$v0, $s2, 8
-520b0003	//	SKIPA3:		blt	$s0, $t3, SKIPA4 ->	SKIPA3:		blt	$s0, $t3, SKIPA4
-5a4a0024	//			SAD_B	$t2, 36($s2) ->			SAD_B	$t2, 36($s2)
-21700000	//			addi	$s0, $t3, 0 ->			addi	$s0, $t3, 0
-2242000c	//			addi	$v0, $s2, 12 ->			addi	$v0, $s2, 12
-5251ffef	//	SKIPA4:		blt	$s2, $s1, FRAME_Y1 ->	SKIPA4:		blt	$s2, $s1, FRAME_Y1
-22520010	//			addi	$s2, $s2, 16 ->			addi	$s2, $s2, 16
-52080003	//			blt	$s0, $t0, SKIPA5 ->			blt	$s0, $t0, SKIPA5
-23390100	//			addi	$t9, $t9, 256 ->			addi	$t9, $t9, 256
-21100000	//			addi	$s0, $t0, 0 ->			addi	$s0, $t0, 0
-2242fff4	//			addi	$v0, $s2, -12 ->			addi	$v0, $s2, -12
-5338ffe1	//	SKIPA5:		blt	$t9, $t8, BACK_START ->	SKIPA5:		blt	$t9, $t8, BACK_START
-00000000	//			nop ->			nop
-00451022	//			sub	$v0, $v0, $a1 ->			sub	$v0, $v0, $a1
-00021082	//			srl	$v0, $v0, 2 ->			srl	$v0, $v0, 2
-02020015	//			buf	$s0, $v0 ->			buf	$s0, $v0
-03e00008	//			jr	$ra ->			jr	$ra
-00000000	//			nop ->			nop
+34050010	//	main:	ori	$a1, $zero, 16 ->	main:	ori	$a1, $zero, 16
+34060000	//		ori	$a2, $zero, 0 ->		ori	$a2, $zero, 0
+0c000006	//		jal	vbsme ->		jal	vbsme
+00000000	//		nop ->		nop
+08000004	//	self:	j	self ->	self:	j	self
+00000000	//		nop ->		nop
+74c00000	//	vbsme:	SAD_A	$zero, 0($a2) ->	vbsme:	SAD_A	$zero, 0($a2)
+74c00004	//		SAD_A	$zero, 4($a2) ->		SAD_A	$zero, 4($a2)
+74c00008	//		SAD_A	$zero, 8($a2) ->		SAD_A	$zero, 8($a2)
+74c0000c	//		SAD_A	$zero, 12($a2) ->		SAD_A	$zero, 12($a2)
+58a00000	//		SAD_B	$zero, 0($a1) ->		SAD_B	$zero, 0($a1)
+58a00004	//		SAD_B	$zero, 4($a1) ->		SAD_B	$zero, 4($a1)
+58a00008	//		SAD_B	$zero, 8($a1) ->		SAD_B	$zero, 8($a1)
+d8a0000c	//		SAD_C	$zero, 12($a1) ->		SAD_C	$zero, 12($a1)
+d8a00010	//		SAD_C	$zero, 16($a1) ->		SAD_C	$zero, 16($a1)
+d8a00014	//		SAD_C	$zero, 20($a1) ->		SAD_C	$zero, 20($a1)
+d8a00018	//		SAD_C	$zero, 24($a1) ->		SAD_C	$zero, 24($a1)
+d8a0001c	//		SAD_C	$zero, 28($a1) ->		SAD_C	$zero, 28($a1)
+d8a00020	//		SAD_C	$zero, 32($a1) ->		SAD_C	$zero, 32($a1)
+d8a00024	//		SAD_C	$zero, 36($a1) ->		SAD_C	$zero, 36($a1)
+d8a00028	//		SAD_C	$zero, 40($a1) ->		SAD_C	$zero, 40($a1)
+d8a0002c	//		SAD_C	$zero, 44($a1) ->		SAD_C	$zero, 44($a1)
+d8a00030	//		SAD_C	$zero, 48($a1) ->		SAD_C	$zero, 48($a1)
+d8a00034	//		SAD_C	$zero, 52($a1) ->		SAD_C	$zero, 52($a1)
+d8a00038	//		SAD_C	$zero, 56($a1) ->		SAD_C	$zero, 56($a1)
+d8a0003c	//		SAD_C	$zero, 60($a1) ->		SAD_C	$zero, 60($a1)
+d8a00040	//		SAD_C	$zero, 64($a1) ->		SAD_C	$zero, 64($a1)
+d8a00044	//		SAD_C	$zero, 68($a1) ->		SAD_C	$zero, 68($a1)
+d8a00048	//		SAD_C	$zero, 72($a1) ->		SAD_C	$zero, 72($a1)
+d8a0004c	//		SAD_C	$zero, 76($a1) ->		SAD_C	$zero, 76($a1)
+d8a00050	//		SAD_C	$zero, 80($a1) ->		SAD_C	$zero, 80($a1)
+d8a00054	//		SAD_C	$zero, 84($a1) ->		SAD_C	$zero, 84($a1)
+d8a00058	//		SAD_C	$zero, 88($a1) ->		SAD_C	$zero, 88($a1)
+d8a0005c	//		SAD_C	$zero, 92($a1) ->		SAD_C	$zero, 92($a1)
+d8a00060	//		SAD_C	$zero, 96($a1) ->		SAD_C	$zero, 96($a1)
+d8a00064	//		SAD_C	$zero, 100($a1) ->		SAD_C	$zero, 100($a1)
+d8a00068	//		SAD_C	$zero, 104($a1) ->		SAD_C	$zero, 104($a1)
+d8a0006c	//		SAD_C	$zero, 108($a1) ->		SAD_C	$zero, 108($a1)
+d8a00070	//		SAD_C	$zero, 112($a1) ->		SAD_C	$zero, 112($a1)
+d8a00074	//		SAD_C	$zero, 116($a1) ->		SAD_C	$zero, 116($a1)
+d8a00078	//		SAD_C	$zero, 120($a1) ->		SAD_C	$zero, 120($a1)
+d8a0007c	//		SAD_C	$zero, 124($a1) ->		SAD_C	$zero, 124($a1)
+d8a00080	//		SAD_C	$zero, 128($a1) ->		SAD_C	$zero, 128($a1)
+d8a00084	//		SAD_C	$zero, 132($a1) ->		SAD_C	$zero, 132($a1)
+d8a00088	//		SAD_C	$zero, 136($a1) ->		SAD_C	$zero, 136($a1)
+d8a0008c	//		SAD_C	$zero, 140($a1) ->		SAD_C	$zero, 140($a1)
+d8a00090	//		SAD_C	$zero, 144($a1) ->		SAD_C	$zero, 144($a1)
+d8a00094	//		SAD_C	$zero, 148($a1) ->		SAD_C	$zero, 148($a1)
+d8a00098	//		SAD_C	$zero, 152($a1) ->		SAD_C	$zero, 152($a1)
+d8a0009c	//		SAD_C	$zero, 156($a1) ->		SAD_C	$zero, 156($a1)
+d8a000a0	//		SAD_C	$zero, 160($a1) ->		SAD_C	$zero, 160($a1)
+d8a000a4	//		SAD_C	$zero, 164($a1) ->		SAD_C	$zero, 164($a1)
+d8a000a8	//		SAD_C	$zero, 168($a1) ->		SAD_C	$zero, 168($a1)
+d8a000ac	//		SAD_C	$zero, 172($a1) ->		SAD_C	$zero, 172($a1)
+d8a000b0	//		SAD_C	$zero, 176($a1) ->		SAD_C	$zero, 176($a1)
+d8a000b4	//		SAD_C	$zero, 180($a1) ->		SAD_C	$zero, 180($a1)
+d8a000b8	//		SAD_C	$zero, 184($a1) ->		SAD_C	$zero, 184($a1)
+d8a000bc	//		SAD_C	$zero, 188($a1) ->		SAD_C	$zero, 188($a1)
+d8a000c0	//		SAD_C	$zero, 192($a1) ->		SAD_C	$zero, 192($a1)
+d8a000c4	//		SAD_C	$zero, 196($a1) ->		SAD_C	$zero, 196($a1)
+d8a000c8	//		SAD_C	$zero, 200($a1) ->		SAD_C	$zero, 200($a1)
+d8a000cc	//		SAD_C	$zero, 204($a1) ->		SAD_C	$zero, 204($a1)
+d8a000d0	//		SAD_C	$zero, 208($a1) ->		SAD_C	$zero, 208($a1)
+d8a000d4	//		SAD_C	$zero, 212($a1) ->		SAD_C	$zero, 212($a1)
+d8a000d8	//		SAD_C	$zero, 216($a1) ->		SAD_C	$zero, 216($a1)
+d8a000dc	//		SAD_C	$zero, 220($a1) ->		SAD_C	$zero, 220($a1)
+d8a000e0	//		SAD_C	$zero, 224($a1) ->		SAD_C	$zero, 224($a1)
+d8a000e4	//		SAD_C	$zero, 228($a1) ->		SAD_C	$zero, 228($a1)
+d8a000e8	//		SAD_C	$zero, 232($a1) ->		SAD_C	$zero, 232($a1)
+d8a000ec	//		SAD_C	$zero, 236($a1) ->		SAD_C	$zero, 236($a1)
+d8a000f0	//		SAD_C	$zero, 240($a1) ->		SAD_C	$zero, 240($a1)
+d8a000f4	//		SAD_C	$zero, 244($a1) ->		SAD_C	$zero, 244($a1)
+d8a000f8	//		SAD_C	$zero, 248($a1) ->		SAD_C	$zero, 248($a1)
+d8a000fc	//		SAD_C	$zero, 252($a1) ->		SAD_C	$zero, 252($a1)
+58a00100	//		SAD_B	$zero, 256($a1) ->		SAD_B	$zero, 256($a1)
+58a00104	//		SAD_B	$zero, 260($a1) ->		SAD_B	$zero, 260($a1)
+58a00108	//		SAD_B	$zero, 264($a1) ->		SAD_B	$zero, 264($a1)
+d8a0010c	//		SAD_C	$zero, 268($a1) ->		SAD_C	$zero, 268($a1)
+d8a00110	//		SAD_C	$zero, 272($a1) ->		SAD_C	$zero, 272($a1)
+d8a00114	//		SAD_C	$zero, 276($a1) ->		SAD_C	$zero, 276($a1)
+d8a00118	//		SAD_C	$zero, 280($a1) ->		SAD_C	$zero, 280($a1)
+d8a0011c	//		SAD_C	$zero, 284($a1) ->		SAD_C	$zero, 284($a1)
+d8a00120	//		SAD_C	$zero, 288($a1) ->		SAD_C	$zero, 288($a1)
+d8a00124	//		SAD_C	$zero, 292($a1) ->		SAD_C	$zero, 292($a1)
+d8a00128	//		SAD_C	$zero, 296($a1) ->		SAD_C	$zero, 296($a1)
+d8a0012c	//		SAD_C	$zero, 300($a1) ->		SAD_C	$zero, 300($a1)
+d8a00130	//		SAD_C	$zero, 304($a1) ->		SAD_C	$zero, 304($a1)
+d8a00134	//		SAD_C	$zero, 308($a1) ->		SAD_C	$zero, 308($a1)
+d8a00138	//		SAD_C	$zero, 312($a1) ->		SAD_C	$zero, 312($a1)
+d8a0013c	//		SAD_C	$zero, 316($a1) ->		SAD_C	$zero, 316($a1)
+d8a00140	//		SAD_C	$zero, 320($a1) ->		SAD_C	$zero, 320($a1)
+d8a00144	//		SAD_C	$zero, 324($a1) ->		SAD_C	$zero, 324($a1)
+d8a00148	//		SAD_C	$zero, 328($a1) ->		SAD_C	$zero, 328($a1)
+d8a0014c	//		SAD_C	$zero, 332($a1) ->		SAD_C	$zero, 332($a1)
+d8a00150	//		SAD_C	$zero, 336($a1) ->		SAD_C	$zero, 336($a1)
+d8a00154	//		SAD_C	$zero, 340($a1) ->		SAD_C	$zero, 340($a1)
+d8a00158	//		SAD_C	$zero, 344($a1) ->		SAD_C	$zero, 344($a1)
+d8a0015c	//		SAD_C	$zero, 348($a1) ->		SAD_C	$zero, 348($a1)
+d8a00160	//		SAD_C	$zero, 352($a1) ->		SAD_C	$zero, 352($a1)
+d8a00164	//		SAD_C	$zero, 356($a1) ->		SAD_C	$zero, 356($a1)
+d8a00168	//		SAD_C	$zero, 360($a1) ->		SAD_C	$zero, 360($a1)
+d8a0016c	//		SAD_C	$zero, 364($a1) ->		SAD_C	$zero, 364($a1)
+d8a00170	//		SAD_C	$zero, 368($a1) ->		SAD_C	$zero, 368($a1)
+d8a00174	//		SAD_C	$zero, 372($a1) ->		SAD_C	$zero, 372($a1)
+d8a00178	//		SAD_C	$zero, 376($a1) ->		SAD_C	$zero, 376($a1)
+d8a0017c	//		SAD_C	$zero, 380($a1) ->		SAD_C	$zero, 380($a1)
+d8a00180	//		SAD_C	$zero, 384($a1) ->		SAD_C	$zero, 384($a1)
+d8a00184	//		SAD_C	$zero, 388($a1) ->		SAD_C	$zero, 388($a1)
+d8a00188	//		SAD_C	$zero, 392($a1) ->		SAD_C	$zero, 392($a1)
+d8a0018c	//		SAD_C	$zero, 396($a1) ->		SAD_C	$zero, 396($a1)
+d8a00190	//		SAD_C	$zero, 400($a1) ->		SAD_C	$zero, 400($a1)
+d8a00194	//		SAD_C	$zero, 404($a1) ->		SAD_C	$zero, 404($a1)
+d8a00198	//		SAD_C	$zero, 408($a1) ->		SAD_C	$zero, 408($a1)
+d8a0019c	//		SAD_C	$zero, 412($a1) ->		SAD_C	$zero, 412($a1)
+d8a001a0	//		SAD_C	$zero, 416($a1) ->		SAD_C	$zero, 416($a1)
+d8a001a4	//		SAD_C	$zero, 420($a1) ->		SAD_C	$zero, 420($a1)
+d8a001a8	//		SAD_C	$zero, 424($a1) ->		SAD_C	$zero, 424($a1)
+d8a001ac	//		SAD_C	$zero, 428($a1) ->		SAD_C	$zero, 428($a1)
+d8a001b0	//		SAD_C	$zero, 432($a1) ->		SAD_C	$zero, 432($a1)
+d8a001b4	//		SAD_C	$zero, 436($a1) ->		SAD_C	$zero, 436($a1)
+d8a001b8	//		SAD_C	$zero, 440($a1) ->		SAD_C	$zero, 440($a1)
+d8a001bc	//		SAD_C	$zero, 444($a1) ->		SAD_C	$zero, 444($a1)
+d8a001c0	//		SAD_C	$zero, 448($a1) ->		SAD_C	$zero, 448($a1)
+d8a001c4	//		SAD_C	$zero, 452($a1) ->		SAD_C	$zero, 452($a1)
+d8a001c8	//		SAD_C	$zero, 456($a1) ->		SAD_C	$zero, 456($a1)
+d8a001cc	//		SAD_C	$zero, 460($a1) ->		SAD_C	$zero, 460($a1)
+d8a001d0	//		SAD_C	$zero, 464($a1) ->		SAD_C	$zero, 464($a1)
+d8a001d4	//		SAD_C	$zero, 468($a1) ->		SAD_C	$zero, 468($a1)
+d8a001d8	//		SAD_C	$zero, 472($a1) ->		SAD_C	$zero, 472($a1)
+d8a001dc	//		SAD_C	$zero, 476($a1) ->		SAD_C	$zero, 476($a1)
+d8a001e0	//		SAD_C	$zero, 480($a1) ->		SAD_C	$zero, 480($a1)
+d8a001e4	//		SAD_C	$zero, 484($a1) ->		SAD_C	$zero, 484($a1)
+d8a001e8	//		SAD_C	$zero, 488($a1) ->		SAD_C	$zero, 488($a1)
+d8a001ec	//		SAD_C	$zero, 492($a1) ->		SAD_C	$zero, 492($a1)
+d8a001f0	//		SAD_C	$zero, 496($a1) ->		SAD_C	$zero, 496($a1)
+d8a001f4	//		SAD_C	$zero, 500($a1) ->		SAD_C	$zero, 500($a1)
+d8a001f8	//		SAD_C	$zero, 504($a1) ->		SAD_C	$zero, 504($a1)
+d8a001fc	//		SAD_C	$zero, 508($a1) ->		SAD_C	$zero, 508($a1)
+e4100000	//		lmin	$s0, 0($zero) ->		lmin	$s0, 0($zero)
+dc020000	//		ltag	$v0, 0($zero) ->		ltag	$v0, 0($zero)
+02020015	//		buf	$s0, $v0 ->		buf	$s0, $v0
+03e00008	//		jr	$ra ->		jr	$ra
+00000000	//		nop ->		nop

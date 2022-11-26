@@ -4,9 +4,11 @@
 module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_SAD_RegWrite,
                     EX_WriteRegister, EX_MEM_WriteRegister, MEM_SAD_WriteRegister,
                     
-                    ID_frame_shift, ID_window_shift, ID_buff,
+                    ID_frame_shift, ID_window_shift, ID_min_in, ID_buff,
                     
                     all_buf_flags, ID_load_buff_a, ID_load_buff_b,
+                    
+                    ID_load_min, ID_load_min_tag,
 
                     ID_ALUControl, ID_R, ID_RegWrite, ID_MemWrite,
                     ID_MemRead, ID_HalfControl, ID_ByteControl, branch,
@@ -84,8 +86,11 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     // SAD opcode
     localparam [5:0] SAD_A_OPCODE = 6'b011101;
     localparam [5:0] SAD_B_OPCODE = 6'b010110;
+    localparam [5:0] SAD_C_OPCODE = 6'b110110;
     localparam [5:0] LBUFA_OPCODE = 6'b010011;
     localparam [5:0] LBUFB_OPCODE = 6'b110011;
+    localparam [5:0] LMIN_OPCODE = 6'b111001;
+    localparam [5:0] LTAG_OPCODE = 6'b110111;
     
     input [5:0] opcode, funct;
     input [4:0] rs, rt;
@@ -98,7 +103,8 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     output reg [3:0] ID_ALUControl;
     output reg [2:0] CompareControl;
     
-    output wire ID_frame_shift, ID_window_shift, ID_buff, ID_load_buff_a, ID_load_buff_b;
+    output wire ID_frame_shift, ID_window_shift, ID_min_in, ID_buff, ID_load_buff_a, ID_load_buff_b,
+    ID_load_min, ID_load_min_tag;
     
     wire strict_branch, equality_branch;
     wire special, jump;
@@ -126,19 +132,7 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
             XORI_OPCODE: ID_ALUControl <= XOR;
             SLTI_OPCODE: ID_ALUControl <= SLT;
             
-            LW_OPCODE: ID_ALUControl <= ADD;
-            LH_OPCODE: ID_ALUControl <= ADD;
-            LB_OPCODE: ID_ALUControl <= ADD;
-            SW_OPCODE: ID_ALUControl <= ADD;
-            SH_OPCODE: ID_ALUControl <= ADD;
-            SB_OPCODE: ID_ALUControl <= ADD;
-            
-            SAD_A_OPCODE: ID_ALUControl <= ADD;
-            SAD_B_OPCODE: ID_ALUControl <= ADD;
-            LBUFA_OPCODE: ID_ALUControl <= ADD;
-            LBUFB_OPCODE: ID_ALUControl <= ADD;
-            
-            default: ID_ALUControl <= 4'bX;
+            default: ID_ALUControl <= ADD;
         endcase
     end
     
@@ -159,10 +153,14 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     
     end
     
+    assign ID_min_in = (opcode == SAD_C_OPCODE);
     assign ID_window_shift = (opcode == SAD_A_OPCODE);
-    assign ID_frame_shift = (opcode == SAD_B_OPCODE);
+    assign ID_frame_shift = (opcode == SAD_B_OPCODE) | ID_min_in;
     assign ID_load_buff_a = (opcode == LBUFA_OPCODE);
     assign ID_load_buff_b = (opcode == LBUFB_OPCODE);
+    
+    assign ID_load_min = (opcode == LMIN_OPCODE);
+    assign ID_load_min_tag = (opcode == LTAG_OPCODE) | ID_load_min;
     
     assign special = (opcode == SPECIAL);
     

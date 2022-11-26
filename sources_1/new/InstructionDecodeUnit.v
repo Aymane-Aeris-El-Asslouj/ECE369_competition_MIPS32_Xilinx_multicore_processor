@@ -5,9 +5,11 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
                             MEM_WB_RegWrite, IF_ID_PC4, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_SAD_RegWrite,
                             EX_WriteRegister, EX_MEM_WriteRegister, MEM_SAD_WriteRegister,
                             
-                            ID_frame_shift, ID_window_shift, ID_buff,
+                            ID_frame_shift, ID_window_shift, ID_min_in, ID_buff,
                             
                             all_buf_flags, ID_load_buff_a, ID_load_buff_b,
+                            
+                            ID_load_min, ID_load_min_tag,
 
                             ID_rs_val, ID_rt_val, ID_ext_imm, ID_rt, ID_rd,
                             ID_shamt, ID_R, ID_ALUControl,
@@ -38,7 +40,8 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
     output [3:0] ID_ALUControl;
     output wire ID_R, ID_RegWrite, ID_MemWrite, ID_MemRead,
     ID_JALControl, ID_PCSrc, ID_HalfControl, ID_ByteControl;
-    output wire ID_frame_shift, ID_window_shift, ID_buff, ID_load_buff_a, ID_load_buff_b;
+    output wire ID_frame_shift, ID_window_shift, ID_min_in, ID_buff, ID_load_buff_a, ID_load_buff_b,
+    ID_load_min, ID_load_min_tag;
     
     // Inner control signals for branching
     wire CompareResult;
@@ -93,11 +96,15 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
         
         .ID_frame_shift(ID_frame_shift),
         .ID_window_shift(ID_window_shift),
+        .ID_min_in(ID_min_in),
         .ID_buff(ID_buff),
         
         .all_buf_flags(all_buf_flags),
         .ID_load_buff_a(ID_load_buff_a),
-        .ID_load_buff_b(ID_load_buff_b)
+        .ID_load_buff_b(ID_load_buff_b),
+        
+        .ID_load_min(ID_load_min),
+        .ID_load_min_tag(ID_load_min_tag)
     );
     
     RegisterFile d1(
