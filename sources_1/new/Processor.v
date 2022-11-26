@@ -29,7 +29,8 @@ module Processor(input wire Clk, Reset,
               .Clk(Clk),
               .Reset(Reset),
               .stall(ID_stall),
-              .flush(ID_PCSrc),
+              //.flush(ID_PCSrc),
+              .flush(1'b0),
               .in({IF_Instruction, IF_PC4}),
               .out({IF_ID_Instruction, IF_ID_PC4})
     );

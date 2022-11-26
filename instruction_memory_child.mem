@@ -1,37 +1,52 @@
-34050010
-34060000
-0c000004
-08000003
-200f00f4
-50c00000
-50c00004
-50c00008
-50c0000c
-000f8400
-20130000
-58a00000
-58a00004
-58a00008
-00b3c020
-5b08000c
-0110c822
-07210002
-21100000
-00131082
-22730004
-166ffff8
-20130000
-58a00100
-58a00104
-58a00108
-00b3c020
-5b08010c
-0110c822
-07210003
-21100000
-00131082
-20420040
-22730004
-166ffff7
-02020015
-03e00008
+34050010	//	main:		ori	$a1, $zero, 16 ->	main:		ori	$a1, $zero, 16
+34060000	//			ori	$a2, $zero, 0 ->			ori	$a2, $zero, 0
+0c000006	//			jal	vbsme ->			jal	vbsme
+00000000	//			nop ->			nop
+08000004	//	self:		j	self ->	self:		j	self
+00000000	//			nop ->			nop
+201100f4	//	vbsme:		addi	$s1, $zero, 244 ->	vbsme:		addi	$s1, $zero, 244
+2018012c	//			addi	$t8, $zero, 300 ->			addi	$t8, $zero, 300
+74c00000	//			SAD_A	$zero, 0($a2) ->			SAD_A	$zero, 0($a2)
+74c00004	//			SAD_A	$zero, 4($a2) ->			SAD_A	$zero, 4($a2)
+74c00008	//			SAD_A	$zero, 8($a2) ->			SAD_A	$zero, 8($a2)
+74c0000c	//			SAD_A	$zero, 12($a2) ->			SAD_A	$zero, 12($a2)
+00118400	//			sll	$s0, $s1, 16 ->			sll	$s0, $s1, 16
+02258820	//			add	$s1, $s1, $a1 ->			add	$s1, $s1, $a1
+0000c820	//			add	$t9, $zero, $zero ->			add	$t9, $zero, $zero
+00b99020	//	BACK_START:	add	$s2, $a1, $t9 ->	BACK_START:	add	$s2, $a1, $t9
+02398820	//			add	$s1, $s1, $t9 ->			add	$s1, $s1, $t9
+5a400000	//			SAD_B	$zero, 0($s2) ->			SAD_B	$zero, 0($s2)
+5a400004	//			SAD_B	$zero, 4($s2) ->			SAD_B	$zero, 4($s2)
+5a400008	//			SAD_B	$zero, 8($s2) ->			SAD_B	$zero, 8($s2)
+5a48000c	//			SAD_B	$t0, 12($s2) ->			SAD_B	$t0, 12($s2)
+5a490010	//			SAD_B	$t1, 16($s2) ->			SAD_B	$t1, 16($s2)
+5a4a0014	//			SAD_B	$t2, 20($s2) ->			SAD_B	$t2, 20($s2)
+52080003	//	FRAME_Y1:	blt	$s0, $t0, SKIPA1 ->	FRAME_Y1:	blt	$s0, $t0, SKIPA1
+5a4b0018	//			SAD_B	$t3, 24($s2) ->			SAD_B	$t3, 24($s2)
+21100000	//			addi	$s0, $t0, 0 ->			addi	$s0, $t0, 0
+22420000	//			addi	$v0, $s2, 0 ->			addi	$v0, $s2, 0
+52090003	//	SKIPA1:		blt	$s0, $t1, SKIPA2 ->	SKIPA1:		blt	$s0, $t1, SKIPA2
+5a48001c	//			SAD_B	$t0, 28($s2) ->			SAD_B	$t0, 28($s2)
+21300000	//			addi	$s0, $t1, 0 ->			addi	$s0, $t1, 0
+22420004	//			addi	$v0, $s2, 4 ->			addi	$v0, $s2, 4
+520a0003	//	SKIPA2:		blt	$s0, $t2, SKIPA3 ->	SKIPA2:		blt	$s0, $t2, SKIPA3
+5a490020	//			SAD_B	$t1, 32($s2) ->			SAD_B	$t1, 32($s2)
+21500000	//			addi	$s0, $t2, 0 ->			addi	$s0, $t2, 0
+22420008	//			addi	$v0, $s2, 8 ->			addi	$v0, $s2, 8
+520b0003	//	SKIPA3:		blt	$s0, $t3, SKIPA4 ->	SKIPA3:		blt	$s0, $t3, SKIPA4
+5a4a0024	//			SAD_B	$t2, 36($s2) ->			SAD_B	$t2, 36($s2)
+21700000	//			addi	$s0, $t3, 0 ->			addi	$s0, $t3, 0
+2242000c	//			addi	$v0, $s2, 12 ->			addi	$v0, $s2, 12
+5251ffef	//	SKIPA4:		blt	$s2, $s1, FRAME_Y1 ->	SKIPA4:		blt	$s2, $s1, FRAME_Y1
+22520010	//			addi	$s2, $s2, 16 ->			addi	$s2, $s2, 16
+52080003	//			blt	$s0, $t0, SKIPA5 ->			blt	$s0, $t0, SKIPA5
+23390100	//			addi	$t9, $t9, 256 ->			addi	$t9, $t9, 256
+21100000	//			addi	$s0, $t0, 0 ->			addi	$s0, $t0, 0
+2242fff4	//			addi	$v0, $s2, -12 ->			addi	$v0, $s2, -12
+5338ffe1	//	SKIPA5:		blt	$t9, $t8, BACK_START ->	SKIPA5:		blt	$t9, $t8, BACK_START
+00000000	//			nop ->			nop
+00451022	//			sub	$v0, $v0, $a1 ->			sub	$v0, $v0, $a1
+00021082	//			srl	$v0, $v0, 2 ->			srl	$v0, $v0, 2
+02020015	//			buf	$s0, $v0 ->			buf	$s0, $v0
+03e00008	//			jr	$ra ->			jr	$ra
+00000000	//			nop ->			nop
