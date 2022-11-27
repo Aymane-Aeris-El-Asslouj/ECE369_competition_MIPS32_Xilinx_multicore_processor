@@ -1,9 +1,7 @@
-34050010	//	main:		ori	$a1, $zero, 16 ->	main:		ori	$a1, $zero, 16
-34060000	//			ori	$a2, $zero, 0 ->			ori	$a2, $zero, 0
-0c000006	//			jal	vbsme_master ->			jal	vbsme_master
-00000000	//			nop ->			nop
-08000004	//	self:		j	self ->	self:		j	self
-00000000	//			nop ->			nop
+34060000	//	main:		ori	$a2, $zero, 0 ->	main:		ori	$a2, $zero, 0
+34050010	//			ori	$a1, $zero, 16 ->			ori	$a1, $zero, 16
+0c000004	//			jal	vbsme_master ->			jal	vbsme_master
+08000003	//	self:		j	self ->	self:		j	self
 200e003f	//	vbsme_master:	addi	$t6, $zero, 63 ->	vbsme_master:	addi	$t6, $zero, 63
 00000017	//			abuf	$zero ->			abuf	$zero
 c8000000	//			lbufc	$zero, 0($zero) ->			lbufc	$zero, 0($zero)
@@ -39,10 +37,9 @@ c800001d	//			lbufc	$zero, 29($zero) ->			lbufc	$zero, 29($zero)
 dc020000	//			ltag	$v0, 0($zero) ->			ltag	$v0, 0($zero)
 4c430000	//			lbufa	$v1, 0($v0) ->			lbufa	$v1, 0($v0)
 00651822	//			sub	$v1, $v1, $a1 ->			sub	$v1, $v1, $a1
+0003ca02	//			srl	$t9, $v1, 8 ->			srl	$t9, $v1, 8
 00031882	//			srl	$v1, $v1, 2 ->			srl	$v1, $v1, 2
 00021040	//			sll	$v0, $v0, 1 ->			sll	$v0, $v0, 1
-0003c982	//			srl	$t9, $v1, 6 ->			srl	$t9, $v1, 6
-00591020	//			add	$v0, $v0, $t9 ->			add	$v0, $v0, $t9
 006e1824	//			and	$v1, $v1, $t6 ->			and	$v1, $v1, $t6
 03e00008	//			jr	$ra ->			jr	$ra
-00000000	//			nop ->			nop
+00591020	//			add	$v0, $v0, $t9 ->			add	$v0, $v0, $t9

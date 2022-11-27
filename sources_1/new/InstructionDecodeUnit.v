@@ -45,7 +45,7 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
     
     // Inner control signals for branching
     wire CompareResult;
-    wire branch, force_branch, JR, J;
+    wire branch, JR;
     wire [2:0] CompareControl;
     
     wire [31:0] inner_rs_val, inner_rt_val;
@@ -65,8 +65,6 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
     assign funct = IF_ID_Instruction[5:0];
     wire [15:0] imm;
     assign imm = IF_ID_Instruction[15:0];
-    wire [25:0] target_address;
-    assign target_address = IF_ID_Instruction[25:0];
     
     ControlUnit d0(
         .opcode(opcode),
@@ -81,9 +79,7 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
         .ID_HalfControl(ID_HalfControl),
         .ID_ByteControl(ID_ByteControl),
         .branch(branch),
-        .force_branch(force_branch),
         .JR(JR),
-        .J(J),
         .ID_JALControl(ID_JALControl),
         .CompareControl(CompareControl),
         .ID_EX_RegWrite(ID_EX_RegWrite),
@@ -132,15 +128,11 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
         .CompareResult(CompareResult)
     );
     
-    assign ID_PCSrc = (branch & CompareResult) | force_branch;
+    assign ID_PCSrc = (branch & CompareResult) | JR;
     
     always@(*) begin
         case (JR)
-            1'b0: case (J)
-                    1'b0: ID_new_PC <= (inner_ext_imm << 2) + IF_ID_PC4;
-                    1'b1: ID_new_PC <= {IF_ID_PC4[31:28], target_address, 2'b00}; 
-                    default: ID_new_PC <= 32'bX;
-                endcase
+            1'b0: ID_new_PC <= (inner_ext_imm << 2) + IF_ID_PC4;
             1'b1: ID_new_PC <= bypass_rs_val;
             default: ID_new_PC <= 32'bX;
         endcase

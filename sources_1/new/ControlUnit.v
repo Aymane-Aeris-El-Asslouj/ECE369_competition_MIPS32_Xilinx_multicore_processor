@@ -12,7 +12,7 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
 
                     ID_ALUControl, ID_R, ID_RegWrite, ID_MemWrite,
                     ID_MemRead, ID_HalfControl, ID_ByteControl, branch,
-                    force_branch, JR, J, ID_JALControl, CompareControl,
+                    JR, ID_JALControl, CompareControl,
                     ID_stall);
 
           
@@ -97,7 +97,7 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     input wire all_buf_flags;
     
     output wire ID_R, ID_MemWrite, ID_RegWrite, ID_MemRead, branch;
-    output wire force_branch, JR, J;
+    output wire JR;
     output wire ID_HalfControl, ID_ByteControl, ID_JALControl;
     output reg [3:0] ID_ALUControl;
     output reg [2:0] CompareControl;
@@ -105,8 +105,7 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     output wire ID_frame_shift, ID_window_shift, ID_min_in, ID_buff, ID_load_buff_a, ID_load_buff_b,
     ID_load_min, ID_load_min_tag;
     
-    wire strict_branch, equality_branch;
-    wire special, jump;
+    wire strict_branch, equality_branch, special;
     
     wire all_buff;
 
@@ -180,17 +179,14 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     
     assign ID_JALControl = (opcode == JAL_OPCODE);
     
-    assign jump = (opcode == J_OPCODE);
     assign JR = special & (funct == JR_FUNCT);
-    assign J = jump | ID_JALControl;
     
     assign strict_branch = (opcode == REGIMM) | (opcode == BGTZ_OPCODE) | (opcode == BLEZ_OPCODE);
     assign equality_branch = (opcode == BEQ_OPCODE) | (opcode == BNE_OPCODE);
     assign branch = equality_branch | strict_branch;
-     
-    assign force_branch = JR | J;
     
-    assign ID_RegWrite = (~(ID_MemWrite | branch | force_branch)) | ID_JALControl;
+    
+    assign ID_RegWrite = (~(ID_MemWrite | branch | JR | ID_frame_shift | ID_window_shift)) | ID_JALControl;
     
     
     
@@ -206,14 +202,14 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
                         (ID_EX_RegWrite & (rs==EX_WriteRegister)) | 
                         (EX_MEM_RegWrite & (rs==EX_MEM_WriteRegister))| 
                         (MEM_SAD_RegWrite & (rs==MEM_SAD_WriteRegister))
-                        )& (~J))
+                        )& (~ID_JALControl))
                         | ((rt != 5'b0) 
                         & (
                         (ID_EX_RegWrite & (rt==EX_WriteRegister)) | 
                         (EX_MEM_RegWrite & (rt==EX_MEM_WriteRegister))| 
                         (MEM_SAD_RegWrite & (rt==MEM_SAD_WriteRegister))
                         )
-                         &(ID_R | ID_MemWrite | equality_branch)) 
+                         &(ID_R | ID_MemWrite | equality_branch | ID_frame_shift)) 
                          | (all_buff & (~all_buf_flags));
     
   

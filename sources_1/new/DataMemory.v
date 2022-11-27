@@ -105,7 +105,7 @@ BRAM_TDP_MACRO #(
 .DOA(MEM_ReadData_A), // Output port-A data, width defined by READ_WIDTH_A parameter
 .DOB(MEM_ReadData_B), // Output port-B data, width defined by READ_WIDTH_B parameter
 .ADDRA(EX_MEM_Address[11:2]), // Input port-A address, width defined by Port A depth
-.ADDRB(EX_MEM_Address[11:2]+256), // Input port-B address, width defined by Port B depth
+.ADDRB(EX_MEM_Address[11:2]+EX_MEM_WriteData[11:2]), // Input port-B address, width defined by Port B depth
 .CLKA(~Clk), // 1-bit input port-A clock
 .CLKB(~Clk), // 1-bit input port-B clock
 .DIA(EX_MEM_WriteData), // Input port-A data, width defined by WRITE_WIDTH_A parameter

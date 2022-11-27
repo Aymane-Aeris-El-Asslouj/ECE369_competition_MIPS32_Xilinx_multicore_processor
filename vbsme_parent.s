@@ -5,12 +5,10 @@ frame0:  .word    0
 .text
 .globl main
 main: 
-    la      $a1, frame0
     la      $a2, window0
+    la      $a1, frame0
     jal     vbsme_master
-                nop
     self: j self
-                nop
 
 .text
 .globl  vbsme_master
@@ -61,19 +59,17 @@ vbsme_master:
 
     sub $v1, $v1, $a1  # get row with subcolumn part 1 (accounts for frame-offset)
 
+    srl $t9, $v1, 8  # select subcolumn
     srl $v1, $v1, 2  # get row with subcolumn part 2 (accounts for byte-offset)
 
 
     sll $v0, $v0, 1  # get main column
 
-    srl $t9, $v1, 6  # select subcolumn
-    add $v0, $v0, $t9  # add subcolumn to columns
     and $v1, $v1, $t6  # subtract subcolumn from row
-
-
+    
 
     jr $ra
-                nop
+                add $v0, $v0, $t9  # add subcolumn to columns
 
 
    
