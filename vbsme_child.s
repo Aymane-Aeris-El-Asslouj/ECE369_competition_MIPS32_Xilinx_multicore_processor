@@ -161,7 +161,7 @@ vbsme:
     lmin $s0, 0($zero)
     ltag $v0, 0($zero)
 
-    buf $s0, $v0
+    buf $v0, $s0
 
     jr $ra
                 nop

@@ -18,30 +18,42 @@ vbsme_master:
 
     abuf $zero
 
-    addi $v0, $zero, 0
+    lbufc $zero, 0($zero)
+    lbufc $zero, 1($zero)
+    lbufc $zero, 2($zero)
+    lbufc $zero, 3($zero)
+    lbufc $zero, 4($zero)
+    lbufc $zero, 5($zero)
+    lbufc $zero, 6($zero)
+    lbufc $zero, 7($zero)
+    lbufc $zero, 8($zero)
+    lbufc $zero, 9($zero)
+    lbufc $zero, 10($zero)
+    lbufc $zero, 11($zero)
+    lbufc $zero, 12($zero)
+    lbufc $zero, 13($zero)
+    lbufc $zero, 14($zero)
+    lbufc $zero, 15($zero)
+    lbufc $zero, 16($zero)
+    lbufc $zero, 17($zero)
+    lbufc $zero, 18($zero)
+    lbufc $zero, 19($zero)
+    lbufc $zero, 20($zero)
+    lbufc $zero, 21($zero)
+    lbufc $zero, 22($zero)
+    lbufc $zero, 23($zero)
+    lbufc $zero, 24($zero)
+    lbufc $zero, 25($zero)
+    lbufc $zero, 26($zero)
+    lbufc $zero, 27($zero)
+    lbufc $zero, 28($zero)
+    lbufc $zero, 29($zero)
 
-    lbufa $t0, 0($zero)
 
-    addi $t5, $zero, 0
-    addi $t6, $zero, 30
+    ltag $v0, 0($zero)
 
 
-
-    START:
-    
-    lbufa $t1, 0($t5)
-    blt $t0, $t1, NOTMIN1
-                nop
-        addi $t0, $t1, 0
-        addi $v0, $t5, 0
-    NOTMIN1:
-    addi $t5, $t5, 1
-    blt $t5, $t6, START
-                nop
-            
-
-
-    lbufb $v1, 0($v0)
+    lbufa $v1, 0($v0)
     sub $v1, $v1, $a1
     addi $v1, $v1, -12
     srl $v1, $v1, 2

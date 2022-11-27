@@ -57,6 +57,17 @@ module SADUnit(Clk, Reset, MEM_SAD_ReadData, frame_shift, window_shift, min_in, 
     
     assign SAD_value_small = K1 + K2 + K3 + K4;
     
+    reg [12:0] min_input;
+    
+    always @(*) begin
+        if(window_shift | frame_shift) begin
+            min_input <= SAD_value_small;
+        end else begin
+            min_input <= MEM_SAD_ReadData[12:0];
+        end
+    
+    end 
+    
     always @(*) begin
         if(load_min) begin
             SAD_value <= {{19{1'b0}}, out_stored};
@@ -69,7 +80,7 @@ module SADUnit(Clk, Reset, MEM_SAD_ReadData, frame_shift, window_shift, min_in, 
             .Clk(Clk),
             .min_in(min_in),
             .max_out(Reset),
-            .in(SAD_value_small),
+            .in(min_input),
             .out_smaller(smaller),
             .out_stored(out_stored),
             .tag(MEM_SAD_ALUResult),

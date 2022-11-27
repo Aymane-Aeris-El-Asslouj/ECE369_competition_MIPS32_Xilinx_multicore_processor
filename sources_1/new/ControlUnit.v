@@ -89,6 +89,7 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     localparam [5:0] SAD_C_OPCODE = 6'b110110;
     localparam [5:0] LBUFA_OPCODE = 6'b010011;
     localparam [5:0] LBUFB_OPCODE = 6'b110011;
+    localparam [5:0] LBUFC_OPCODE = 6'b110010;
     localparam [5:0] LMIN_OPCODE = 6'b111001;
     localparam [5:0] LTAG_OPCODE = 6'b110111;
     
@@ -153,11 +154,15 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     
     end
     
-    assign ID_min_in = (opcode == SAD_C_OPCODE);
+    wire SAD_C, LBUFC;
+    
+    assign SAD_C = (opcode == SAD_C_OPCODE);
+    assign LBUFC = (opcode == LBUFC_OPCODE);
+    assign ID_min_in = SAD_C | LBUFC;
     assign ID_window_shift = (opcode == SAD_A_OPCODE);
-    assign ID_frame_shift = (opcode == SAD_B_OPCODE) | ID_min_in;
+    assign ID_frame_shift = (opcode == SAD_B_OPCODE) | SAD_C;
     assign ID_load_buff_a = (opcode == LBUFA_OPCODE);
-    assign ID_load_buff_b = (opcode == LBUFB_OPCODE);
+    assign ID_load_buff_b = (opcode == LBUFB_OPCODE) | LBUFC;
     
     assign ID_load_min = (opcode == LMIN_OPCODE);
     assign ID_load_min_tag = (opcode == LTAG_OPCODE) | ID_load_min;

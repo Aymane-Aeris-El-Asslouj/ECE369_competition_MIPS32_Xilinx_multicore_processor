@@ -138,6 +138,6 @@ d8a001f8	//		SAD_C	$zero, 504($a1) ->		SAD_C	$zero, 504($a1)
 d8a001fc	//		SAD_C	$zero, 508($a1) ->		SAD_C	$zero, 508($a1)
 e4100000	//		lmin	$s0, 0($zero) ->		lmin	$s0, 0($zero)
 dc020000	//		ltag	$v0, 0($zero) ->		ltag	$v0, 0($zero)
-02020015	//		buf	$s0, $v0 ->		buf	$s0, $v0
+00500015	//		buf	$v0, $s0 ->		buf	$v0, $s0
 03e00008	//		jr	$ra ->		jr	$ra
 00000000	//		nop ->		nop

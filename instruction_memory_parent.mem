@@ -5,19 +5,38 @@
 08000004	//	self:		j	self ->	self:		j	self
 00000000	//			nop ->			nop
 00000017	//	vbsme_master:	abuf	$zero ->	vbsme_master:	abuf	$zero
-20020000	//			addi	$v0, $zero, 0 ->			addi	$v0, $zero, 0
-4c080000	//			lbufa	$t0, 0($zero) ->			lbufa	$t0, 0($zero)
-200d0000	//			addi	$t5, $zero, 0 ->			addi	$t5, $zero, 0
-200e001e	//			addi	$t6, $zero, 30 ->			addi	$t6, $zero, 30
-4da90000	//	START:		lbufa	$t1, 0($t5) ->	START:		lbufa	$t1, 0($t5)
-51090003	//			blt	$t0, $t1, NOTMIN1 ->			blt	$t0, $t1, NOTMIN1
-00000000	//			nop ->			nop
-21280000	//			addi	$t0, $t1, 0 ->			addi	$t0, $t1, 0
-21a20000	//			addi	$v0, $t5, 0 ->			addi	$v0, $t5, 0
-21ad0001	//	NOTMIN1:	addi	$t5, $t5, 1 ->	NOTMIN1:	addi	$t5, $t5, 1
-51aefff9	//			blt	$t5, $t6, START ->			blt	$t5, $t6, START
-00000000	//			nop ->			nop
-cc430000	//			lbufb	$v1, 0($v0) ->			lbufb	$v1, 0($v0)
+c8000000	//			lbufc	$zero, 0($zero) ->			lbufc	$zero, 0($zero)
+c8000001	//			lbufc	$zero, 1($zero) ->			lbufc	$zero, 1($zero)
+c8000002	//			lbufc	$zero, 2($zero) ->			lbufc	$zero, 2($zero)
+c8000003	//			lbufc	$zero, 3($zero) ->			lbufc	$zero, 3($zero)
+c8000004	//			lbufc	$zero, 4($zero) ->			lbufc	$zero, 4($zero)
+c8000005	//			lbufc	$zero, 5($zero) ->			lbufc	$zero, 5($zero)
+c8000006	//			lbufc	$zero, 6($zero) ->			lbufc	$zero, 6($zero)
+c8000007	//			lbufc	$zero, 7($zero) ->			lbufc	$zero, 7($zero)
+c8000008	//			lbufc	$zero, 8($zero) ->			lbufc	$zero, 8($zero)
+c8000009	//			lbufc	$zero, 9($zero) ->			lbufc	$zero, 9($zero)
+c800000a	//			lbufc	$zero, 10($zero) ->			lbufc	$zero, 10($zero)
+c800000b	//			lbufc	$zero, 11($zero) ->			lbufc	$zero, 11($zero)
+c800000c	//			lbufc	$zero, 12($zero) ->			lbufc	$zero, 12($zero)
+c800000d	//			lbufc	$zero, 13($zero) ->			lbufc	$zero, 13($zero)
+c800000e	//			lbufc	$zero, 14($zero) ->			lbufc	$zero, 14($zero)
+c800000f	//			lbufc	$zero, 15($zero) ->			lbufc	$zero, 15($zero)
+c8000010	//			lbufc	$zero, 16($zero) ->			lbufc	$zero, 16($zero)
+c8000011	//			lbufc	$zero, 17($zero) ->			lbufc	$zero, 17($zero)
+c8000012	//			lbufc	$zero, 18($zero) ->			lbufc	$zero, 18($zero)
+c8000013	//			lbufc	$zero, 19($zero) ->			lbufc	$zero, 19($zero)
+c8000014	//			lbufc	$zero, 20($zero) ->			lbufc	$zero, 20($zero)
+c8000015	//			lbufc	$zero, 21($zero) ->			lbufc	$zero, 21($zero)
+c8000016	//			lbufc	$zero, 22($zero) ->			lbufc	$zero, 22($zero)
+c8000017	//			lbufc	$zero, 23($zero) ->			lbufc	$zero, 23($zero)
+c8000018	//			lbufc	$zero, 24($zero) ->			lbufc	$zero, 24($zero)
+c8000019	//			lbufc	$zero, 25($zero) ->			lbufc	$zero, 25($zero)
+c800001a	//			lbufc	$zero, 26($zero) ->			lbufc	$zero, 26($zero)
+c800001b	//			lbufc	$zero, 27($zero) ->			lbufc	$zero, 27($zero)
+c800001c	//			lbufc	$zero, 28($zero) ->			lbufc	$zero, 28($zero)
+c800001d	//			lbufc	$zero, 29($zero) ->			lbufc	$zero, 29($zero)
+dc020000	//			ltag	$v0, 0($zero) ->			ltag	$v0, 0($zero)
+4c430000	//			lbufa	$v1, 0($v0) ->			lbufa	$v1, 0($v0)
 00651822	//			sub	$v1, $v1, $a1 ->			sub	$v1, $v1, $a1
 2063fff4	//			addi	$v1, $v1, -12 ->			addi	$v1, $v1, -12
 00031882	//			srl	$v1, $v1, 2 ->			srl	$v1, $v1, 2
