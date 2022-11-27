@@ -9,7 +9,6 @@ module CompareUnit(CompareControl, A, B, CompareResult);
     localparam [2:0] LEZ = 3'd3;
     localparam [2:0] EQ = 3'd4;
     localparam [2:0] NEQ = 3'd5;
-    localparam [2:0] LT = 3'd6;
 
 	input [2:0] CompareControl;
 	input signed [31:0] A, B;
@@ -23,7 +22,6 @@ module CompareUnit(CompareControl, A, B, CompareResult);
             LEZ: CompareResult <= (A <= 0);
             EQ: CompareResult <= (A == B);
             NEQ: CompareResult <= (A != B);
-            LT: CompareResult <= (A < B);
             default: CompareResult <= 1'bX;
         endcase
     end

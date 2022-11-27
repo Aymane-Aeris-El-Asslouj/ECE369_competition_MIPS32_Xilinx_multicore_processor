@@ -35,7 +35,6 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     localparam [2:0] LEZ = 3'd3;
     localparam [2:0] EQ = 3'd4;
     localparam [2:0] NEQ = 3'd5;
-    localparam [2:0] LT = 3'd6;
     
     // Ahrithmetic/logical opcodes
     localparam [5:0] SPECIAL = 6'b000000;
@@ -73,7 +72,6 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     localparam [5:0] REGIMM = 6'b000001;
     localparam [5:0] BGTZ_OPCODE = 6'b000111;
     localparam [5:0] BLEZ_OPCODE = 6'b000110;
-    localparam [5:0] BLT_OPCODE = 6'b010100;
     
     localparam [4:0] BGEZ_RT = 5'b00001;
     localparam [4:0] BLTZ_RT = 5'b00000;
@@ -148,7 +146,6 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
                     default: CompareControl <= 4'bX;
                 endcase
             BLEZ_OPCODE: CompareControl <= LEZ;
-            BLT_OPCODE: CompareControl <= LT;
             default: CompareControl <= 4'bX;
         endcase
     
@@ -188,7 +185,7 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     assign J = jump | ID_JALControl;
     
     assign strict_branch = (opcode == REGIMM) | (opcode == BGTZ_OPCODE) | (opcode == BLEZ_OPCODE);
-    assign equality_branch = (opcode == BEQ_OPCODE) | (opcode == BNE_OPCODE) | (opcode == BLT_OPCODE);
+    assign equality_branch = (opcode == BEQ_OPCODE) | (opcode == BNE_OPCODE);
     assign branch = equality_branch | strict_branch;
      
     assign force_branch = JR | J;

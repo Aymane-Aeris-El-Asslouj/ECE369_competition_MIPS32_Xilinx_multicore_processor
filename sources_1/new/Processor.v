@@ -94,23 +94,23 @@ module Processor(input wire Clk, Reset,
     );
     
     // Memory
-    wire [31:0] MEM_ReadData;
+    wire [31:0] MEM_ReadData_A, MEM_ReadData_B;
     
     
-    wire [31:0] MEM_SAD_ReadData;
+    wire [31:0] MEM_SAD_ReadData_A, MEM_SAD_ReadData_B;
     wire [4:0] MEM_SAD_WriteRegister;
     wire [31:0] MEM_SAD_ALUResult;
     wire MEM_SAD_RegWrite, MEM_SAD_MemRead;
     wire MEM_SAD_frame_shift, MEM_SAD_window_shift, MEM_SAD_min_in,
     MEM_SAD_load_min, MEM_SAD_load_min_tag;
     
-    PipeReg #(32*2+5+2+2+1+2) MEM_SAD(
+    PipeReg #(32*2+5+2+2+1+2+32) MEM_SAD(
         .Clk(Clk),.Reset(Reset),
         .stall(1'b0),
         .flush(1'b0),
-        .in({MEM_ReadData,EX_MEM_WriteRegister,EX_MEM_ALUResult,EX_MEM_RegWrite,EX_MEM_MemRead,
+        .in({MEM_ReadData_A, MEM_ReadData_B,EX_MEM_WriteRegister,EX_MEM_ALUResult,EX_MEM_RegWrite,EX_MEM_MemRead,
         EX_MEM_frame_shift, EX_MEM_window_shift, EX_MEM_min_in, EX_MEM_load_min, EX_MEM_load_min_tag}),
-        .out({MEM_SAD_ReadData,MEM_SAD_WriteRegister,MEM_SAD_ALUResult,MEM_SAD_RegWrite,MEM_SAD_MemRead,
+        .out({MEM_SAD_ReadData_A, MEM_SAD_ReadData_B,MEM_SAD_WriteRegister,MEM_SAD_ALUResult,MEM_SAD_RegWrite,MEM_SAD_MemRead,
         MEM_SAD_frame_shift, MEM_SAD_window_shift, MEM_SAD_min_in, MEM_SAD_load_min, MEM_SAD_load_min_tag})
     );
     
@@ -129,7 +129,7 @@ module Processor(input wire Clk, Reset,
         .Clk(Clk),.Reset(Reset),
         .stall(1'b0),
         .flush(1'b0),
-        .in({MEM_SAD_ReadData,MEM_SAD_WriteRegister,MEM_SAD_ALUResult,MEM_SAD_RegWrite,MEM_SAD_MemRead, SAD_value, MEM_SAD_load_min_tag}),
+        .in({MEM_SAD_ReadData_A,MEM_SAD_WriteRegister,MEM_SAD_ALUResult,MEM_SAD_RegWrite,MEM_SAD_MemRead, SAD_value, MEM_SAD_load_min_tag}),
         .out({SAD_WB_ReadData,SAD_WB_WriteRegister,SAD_WB_ALUResult,SAD_WB_RegWrite,SAD_WB_MemRead, SAD_WB_value, SAD_WB_load_min_tag})
     );
     
@@ -222,19 +222,22 @@ module Processor(input wire Clk, Reset,
         .EX_MEM_HalfControl(EX_MEM_HalfControl),
         .EX_MEM_ByteControl(EX_MEM_ByteControl),
         
-        .MEM_ReadData(MEM_ReadData),
         .EX_MEM_load_buff_a(EX_MEM_load_buff_a),
         .EX_MEM_load_buff_b(EX_MEM_load_buff_b),
         .buf_val_1_addr(buf_val_1_addr),
         .buf_val_2_addr(buf_val_2_addr),
         .buf_val_1_select(buf_val_1_select),
-        .buf_val_2_select(buf_val_2_select)
+        .buf_val_2_select(buf_val_2_select),
+        
+        .MEM_ReadData_A(MEM_ReadData_A),
+        .MEM_ReadData_B(MEM_ReadData_B)
     );
     
     SADUnit p4(
         .Clk(Clk),
         .Reset(Reset),
-        .MEM_SAD_ReadData(MEM_SAD_ReadData),
+        .MEM_SAD_ReadData_A(MEM_SAD_ReadData_A),
+        .MEM_SAD_ReadData_B(MEM_SAD_ReadData_B),
         .frame_shift(MEM_SAD_frame_shift),
         .window_shift(MEM_SAD_window_shift),
         .SAD_value(SAD_value),

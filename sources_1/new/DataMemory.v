@@ -4,7 +4,7 @@
 module DataMemory(EX_MEM_Address, EX_MEM_WriteData, Clk, EX_MEM_MemWrite, EX_MEM_MemRead,
                 EX_MEM_HalfControl, EX_MEM_ByteControl,
 
-                MEM_ReadData); 
+                MEM_ReadData_A, MEM_ReadData_B); 
     
     parameter memories = "none_2.mem";
 
@@ -16,7 +16,7 @@ module DataMemory(EX_MEM_Address, EX_MEM_WriteData, Clk, EX_MEM_MemWrite, EX_MEM
 	//reg [31:0] Memory[0:127];
     
     //output reg[31:0] MEM_ReadData; // Contents of memory location at Address
-    output wire [31:0] MEM_ReadData; // Contents of memory location at Address
+    output wire [31:0] MEM_ReadData_A, MEM_ReadData_B; // Contents of memory location at Address
     
     //reg [31:0] ReadWord; //ReadWord_2;
     
@@ -53,27 +53,73 @@ module DataMemory(EX_MEM_Address, EX_MEM_WriteData, Clk, EX_MEM_MemWrite, EX_MEM
 // 1 | "36Kb" | 32768 | 15-bit | 1-bit //
 // 1 | "18Kb" | 16384 | 14-bit | 1-bit //
 /////////////////////////////////////////////////////////////////////
-BRAM_SINGLE_MACRO #(
-.BRAM_SIZE("36Kb"), // Target BRAM, "18Kb" or "36Kb"
-.DEVICE("7SERIES"), // Target Device: "7SERIES"
-.DO_REG(0), // Optional output register (0 or 1)
-.INIT(36'h000000000), // Initial values on output port
-.INIT_FILE (memories),
-.WRITE_WIDTH(32), // Valid values are 1-72 (37-72 only valid when BRAM_SIZE="36Kb")
-.READ_WIDTH(32), // Valid values are 1-72 (37-72 only valid when BRAM_SIZE="36Kb")
-.SRVAL(36'h000000000), // Set/Reset value forr port output
-.WRITE_MODE("WRITE_FIRST") // "WRITE_FIRST", "READ_FIRST", or "NO_CHANGE"
-) BRAM_SINGLE_MACRO_inst (
-.DO(MEM_ReadData), // Output data, width defined by READ_WIDTH parameter
-.ADDR(EX_MEM_Address[11:2]), // Input address, width defined by read/write port depth
-.CLK(~Clk), // 1-bit input clock
-.DI(EX_MEM_WriteData), // Input data port, width defined by WRITE_WIDTH parameter
-.EN(1'b1), // 1-bit input RAM enable
-.REGCE(1'b0), // 1-bit input output register enable
-.RST(1'b0), // 1-bit input reset
-.WE({4{EX_MEM_MemWrite}}) // Input write enable, width defined by write port depth
-);
+//BRAM_SINGLE_MACRO #(
+//.BRAM_SIZE("36Kb"), // Target BRAM, "18Kb" or "36Kb"
+//.DEVICE("7SERIES"), // Target Device: "7SERIES"
+//.DO_REG(0), // Optional output register (0 or 1)
+//.INIT(36'h000000000), // Initial values on output port
+//.INIT_FILE (memories),
+//.WRITE_WIDTH(32), // Valid values are 1-72 (37-72 only valid when BRAM_SIZE="36Kb")
+//.READ_WIDTH(32), // Valid values are 1-72 (37-72 only valid when BRAM_SIZE="36Kb")
+//.SRVAL(36'h000000000), // Set/Reset value forr port output
+//.WRITE_MODE("WRITE_FIRST") // "WRITE_FIRST", "READ_FIRST", or "NO_CHANGE"
+//) BRAM_SINGLE_MACRO_inst (
+//.DO(MEM_ReadData), // Output data, width defined by READ_WIDTH parameter
+//.ADDR(EX_MEM_Address[11:2]), // Input address, width defined by read/write port depth
+//.CLK(~Clk), // 1-bit input clock
+//.DI(EX_MEM_WriteData), // Input data port, width defined by WRITE_WIDTH parameter
+//.EN(1'b1), // 1-bit input RAM enable
+//.REGCE(1'b0), // 1-bit input output register enable
+//.RST(1'b0), // 1-bit input reset
+//.WE({4{EX_MEM_MemWrite}}) // Input write enable, width defined by write port depth
+//);
 // End of BRAM_SINGLE_MACRO_inst instantiation
+
+// BRAM_TDP_MACRO: True Dual Port RAM
+// 7 Series
+// Xilinx HDL Libraries Guide, version 2012.2
+//////////////////////////////////////////////////////////////////////////
+// DATA_WIDTH_A/B | BRAM_SIZE | RAM Depth | ADDRA/B Width | WEA/B Width //
+// ===============|===========|===========|===============|=============//
+// 19-36 | "36Kb" | 1024 | 10-bit | 4-bit //
+//////////////////////////////////////////////////////////////////////////
+BRAM_TDP_MACRO #(
+.BRAM_SIZE("36Kb"), // Target BRAM: "18Kb" or "36Kb"
+.DEVICE("7SERIES"), // Target device: "7SERIES"
+.DOA_REG(0), // Optional port A output register (0 or 1)
+.DOB_REG(0), // Optional port B output register (0 or 1)
+.INIT_A(32'h0000000), // Initial values on port A output port
+.INIT_B(32'h00000000), // Initial values on port B output port
+.INIT_FILE (memories),
+.READ_WIDTH_A (32), // Valid values are 1-36 (19-36 only valid when BRAM_SIZE="36Kb")
+.READ_WIDTH_B (32), // Valid values are 1-36 (19-36 only valid when BRAM_SIZE="36Kb")
+.SIM_COLLISION_CHECK ("ALL"), // Collision check enable "ALL", "WARNING_ONLY",
+// "GENERATE_X_ONLY" or "NONE"
+.SRVAL_A(32'h00000000), // Set/Reset value forr port A output
+.SRVAL_B(32'h00000000), // Set/Reset value forr port B output
+.WRITE_MODE_A("WRITE_FIRST"), // "WRITE_FIRST", "READ_FIRST", or "NO_CHANGE"
+.WRITE_MODE_B("WRITE_FIRST"), // "WRITE_FIRST", "READ_FIRST", or "NO_CHANGE"
+.WRITE_WIDTH_A(32), // Valid values are 1-36 (19-36 only valid when BRAM_SIZE="36Kb")
+.WRITE_WIDTH_B(32) // Valid values are 1-36 (19-36 only valid when BRAM_SIZE="36Kb")
+) BRAM_TDP_MACRO_inst (
+.DOA(MEM_ReadData_A), // Output port-A data, width defined by READ_WIDTH_A parameter
+.DOB(MEM_ReadData_B), // Output port-B data, width defined by READ_WIDTH_B parameter
+.ADDRA(EX_MEM_Address[11:2]), // Input port-A address, width defined by Port A depth
+.ADDRB(EX_MEM_Address[11:2]+256), // Input port-B address, width defined by Port B depth
+.CLKA(~Clk), // 1-bit input port-A clock
+.CLKB(~Clk), // 1-bit input port-B clock
+.DIA(EX_MEM_WriteData), // Input port-A data, width defined by WRITE_WIDTH_A parameter
+.DIB(32'b0), // Input port-B data, width defined by WRITE_WIDTH_B parameter
+.ENA(1'b1), // 1-bit input port-A enable
+.ENB(1'b1), // 1-bit input port-B enable
+.REGCEA(1'b0), // 1-bit input port-A output register enable
+.REGCEB(1'b0), // 1-bit input port-B output register enable
+.RSTA(1'b0), // 1-bit input port-A reset
+.RSTB(1'b0), // 1-bit input port-B reset
+.WEA({4{EX_MEM_MemWrite}}), // Input port-A write enable, width defined by Port A depth
+.WEB(4'b0) // Input port-B write enable, width defined by Port B depth
+);
+// End of BRAM_TDP_MACRO_inst instantiation
     
     
     

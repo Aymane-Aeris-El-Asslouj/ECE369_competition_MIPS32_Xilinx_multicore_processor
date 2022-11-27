@@ -4,7 +4,7 @@
 module MemoryUnit(EX_MEM_ALUResult, EX_MEM_rt_val, Clk, EX_MEM_MemWrite, EX_MEM_MemRead,
                 EX_MEM_HalfControl, EX_MEM_ByteControl, 
 
-                MEM_ReadData,
+                MEM_ReadData_A, MEM_ReadData_B,
                 
                 EX_MEM_load_buff_a, EX_MEM_load_buff_b,
                 buf_val_1_addr, buf_val_2_addr,
@@ -20,9 +20,10 @@ module MemoryUnit(EX_MEM_ALUResult, EX_MEM_rt_val, Clk, EX_MEM_MemWrite, EX_MEM_
     input [31:0] EX_MEM_ALUResult;
     input [31:0] EX_MEM_rt_val;
     
-    wire [31:0] pseudo_ReadData;
+    wire [31:0] pseudo_ReadData_A;
     
-    output reg [31:0] MEM_ReadData;
+    output reg [31:0] MEM_ReadData_A;
+    output wire [31:0] MEM_ReadData_B;
     
     
     output wire [4:0] buf_val_1_addr, buf_val_2_addr;
@@ -34,7 +35,8 @@ module MemoryUnit(EX_MEM_ALUResult, EX_MEM_rt_val, Clk, EX_MEM_MemWrite, EX_MEM_
         .Clk(Clk),
         .EX_MEM_MemWrite(EX_MEM_MemWrite),
         .EX_MEM_MemRead(EX_MEM_MemRead),
-        .MEM_ReadData(pseudo_ReadData),
+        .MEM_ReadData_A(pseudo_ReadData_A),
+        .MEM_ReadData_B(MEM_ReadData_B),
         .EX_MEM_HalfControl(EX_MEM_HalfControl),
         .EX_MEM_ByteControl(EX_MEM_ByteControl)
     );
@@ -44,11 +46,11 @@ module MemoryUnit(EX_MEM_ALUResult, EX_MEM_rt_val, Clk, EX_MEM_MemWrite, EX_MEM_
     
     always@(*) begin
         if (EX_MEM_load_buff_a) begin
-            MEM_ReadData <= buf_val_1_select;
+            MEM_ReadData_A <= buf_val_1_select;
         end else if (EX_MEM_load_buff_b) begin
-            MEM_ReadData <= buf_val_2_select;
+            MEM_ReadData_A <= buf_val_2_select;
         end else begin
-            MEM_ReadData <= pseudo_ReadData;
+            MEM_ReadData_A <= pseudo_ReadData_A;
         end
     end
     
