@@ -11,7 +11,7 @@ module Processor(input wire Clk, Reset,
                 output wire [31:0] out_PC, buf_val_1, buf_val_2,
                 output wire buf_flag,
                 
-            output wire [4:0] buf_val_1_addr, buf_val_2_addr,
+            output wire [2:0] buf_val_1_addr, buf_val_2_addr,
             input wire [31:0] buf_val_1_select, buf_val_2_select,
             input wire all_buf_flags
                 );

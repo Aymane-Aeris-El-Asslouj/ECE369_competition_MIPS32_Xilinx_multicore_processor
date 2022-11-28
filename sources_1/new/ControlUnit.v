@@ -55,8 +55,7 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     localparam [5:0] SLT_FUNCT = 6'b101010;    
     localparam [5:0] SLL_FUNCT = 6'b000000;  
     localparam [5:0] SRL_FUNCT = 6'b000010;
-    localparam [5:0] BUF_FUNCT = 6'b010101;
-    localparam [5:0] ABUF_FUNCT = 6'b010111;
+    localparam [5:0] BUF_FUNCT = 6'b010101;//////
     
     // Memory opcode
     localparam [5:0] LW_OPCODE = 6'b100011;
@@ -67,19 +66,19 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     localparam [5:0] SB_OPCODE = 6'b101000;
     
     // Branch opcode
-    localparam [5:0] BEQ_OPCODE = 6'b000100;
-    localparam [5:0] BNE_OPCODE = 6'b000101;
-    localparam [5:0] REGIMM = 6'b000001;
-    localparam [5:0] BGTZ_OPCODE = 6'b000111;
-    localparam [5:0] BLEZ_OPCODE = 6'b000110;
+    localparam [5:0] BEQ_OPCODE = 6'b000100;//////
+    localparam [5:0] BNE_OPCODE = 6'b000101;//////
+    localparam [5:0] REGIMM = 6'b000001;//////
+    localparam [5:0] BGTZ_OPCODE = 6'b000111;//////
+    localparam [5:0] BLEZ_OPCODE = 6'b000110;//////
     
-    localparam [4:0] BGEZ_RT = 5'b00001;
-    localparam [4:0] BLTZ_RT = 5'b00000;
+    localparam [4:0] BGEZ_RT = 5'b00001;//////
+    localparam [4:0] BLTZ_RT = 5'b00000;//////
     
     localparam [5:0] J_OPCODE = 6'b000010;
     localparam [5:0] JAL_OPCODE = 6'b000011;
     
-    localparam [5:0] JR_FUNCT = 6'b001000;
+    localparam [5:0] JR_FUNCT = 6'b001000;//////
     
     // SAD opcode
     localparam [5:0] SAD_A_OPCODE = 6'b011101;
@@ -107,7 +106,7 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     
     wire strict_branch, equality_branch, special;
     
-    wire all_buff;
+    wire need_buff;
 
     always @(*) begin
         case(opcode)
@@ -166,7 +165,7 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     assign special = (opcode == SPECIAL);
     
     assign ID_buff = special &(funct == BUF_FUNCT);
-    assign all_buff = special &(funct == ABUF_FUNCT);
+    assign need_buff = ID_load_buff_a | ID_load_buff_b;
     
     assign ID_R = special | (opcode == SPECIAL2);
     
@@ -210,7 +209,7 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
                         (MEM_SAD_RegWrite & (rt==MEM_SAD_WriteRegister))
                         )
                          &(ID_R | ID_MemWrite | equality_branch | ID_frame_shift)) 
-                         | (all_buff & (~all_buf_flags));
+                         | (need_buff & (~all_buf_flags));
     
   
         

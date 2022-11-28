@@ -7,12 +7,17 @@ c8000001	//			lbufc	$zero, 1($zero) ->			lbufc	$zero, 1($zero)
 c8000002	//			lbufc	$zero, 2($zero) ->			lbufc	$zero, 2($zero)
 c8000003	//			lbufc	$zero, 3($zero) ->			lbufc	$zero, 3($zero)
 c8000004	//			lbufc	$zero, 4($zero) ->			lbufc	$zero, 4($zero)
-c8000005	//			lbufc	$zero, 5($zero) ->			lbufc	$zero, 5($zero)
 dc020000	//			ltag	$v0, 0($zero) ->			ltag	$v0, 0($zero)
 4c430000	//			lbufa	$v1, 0($v0) ->			lbufa	$v1, 0($v0)
-e4100000	//			lmin	$s0, 0($zero) ->			lmin	$s0, 0($zero)
-00651822	//			sub	$v1, $v1, $a1 ->			sub	$v1, $v1, $a1
-00021400	//			sll	$v0, $v0, 16 ->			sll	$v0, $v0, 16
-00431020	//			add	$v0, $v0, $v1 ->			add	$v0, $v0, $v1
+0003c402	//			srl	$t8, $v1, 16 ->			srl	$t8, $v1, 16
+0018c040	//			sll	$t8, $t8, 1 ->			sll	$t8, $t8, 1
+30637fff	//			andi	$v1, $v1, 32767 ->			andi	$v1, $v1, 32767
+0003ca02	//			srl	$t9, $v1, 8 ->			srl	$t9, $v1, 8
+00031882	//			srl	$v1, $v1, 2 ->			srl	$v1, $v1, 2
+00025880	//			sll	$t3, $v0, 2 ->			sll	$t3, $v0, 2
+000260c0	//			sll	$t4, $v0, 3 ->			sll	$t4, $v0, 3
+016c1020	//			add	$v0, $t3, $t4 ->			add	$v0, $t3, $t4
+3063003f	//			andi	$v1, $v1, 63 ->			andi	$v1, $v1, 63
+00581020	//			add	$v0, $v0, $t8 ->			add	$v0, $v0, $t8
 03e00008	//			jr	$ra ->			jr	$ra
-00500015	//			buf	$v0, $s0 ->			buf	$v0, $s0
+00591020	//			add	$v0, $v0, $t9 ->			add	$v0, $v0, $t9

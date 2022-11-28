@@ -19,7 +19,7 @@ wire [31:0] out_PC, out_write_data, out_v0, out_v1;
 wire ClkOut;
 
 ClkDiv aaa(Clk, 1'b0, ClkOut);
-Processor bbb(ClkOut, Reset, out_PC, out_write_data, out_v0, out_v1);
+MultiCore mmm(ClkOut, Reset, out_v0, out_v1);
 Two4DigitDisplay ccc(Clk, out_v0[15:0], out_v1[15:0], out7, en_out);
 
 

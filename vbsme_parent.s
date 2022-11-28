@@ -14,11 +14,6 @@ main:
 .globl  vbsme_master
 vbsme_master:
 
-    addi $t6, $zero, 63
-
-    # wait for child cores to finish computations
-    abuf $zero
-
     # get minimum of child core computations
     lbufc $zero, 0($zero)
     lbufc $zero, 1($zero)
@@ -26,50 +21,22 @@ vbsme_master:
     lbufc $zero, 3($zero)
     lbufc $zero, 4($zero)
     lbufc $zero, 5($zero)
-    lbufc $zero, 6($zero)
-    lbufc $zero, 7($zero)
-    lbufc $zero, 8($zero)
-    lbufc $zero, 9($zero)
-    lbufc $zero, 10($zero)
-    lbufc $zero, 11($zero)
-    lbufc $zero, 12($zero)
-    lbufc $zero, 13($zero)
-    lbufc $zero, 14($zero)
-    lbufc $zero, 15($zero)
-    lbufc $zero, 16($zero)
-    lbufc $zero, 17($zero)
-    lbufc $zero, 18($zero)
-    lbufc $zero, 19($zero)
-    lbufc $zero, 20($zero)
-    lbufc $zero, 21($zero)
-    lbufc $zero, 22($zero)
-    lbufc $zero, 23($zero)
-    lbufc $zero, 24($zero)
-    lbufc $zero, 25($zero)
-    lbufc $zero, 26($zero)
-    lbufc $zero, 27($zero)
-    lbufc $zero, 28($zero)
-    lbufc $zero, 29($zero)
 
-
-    ltag $v0, 0($zero)  # load half of main column
-
+    ltag $v0, 0($zero)  # load child core number with min SAD
 
     lbufa $v1, 0($v0)  # load row with subcolumn with frame and byte offset
 
+    lmin $s0, 0($zero)
+
     sub $v1, $v1, $a1  # get row with subcolumn part 1 (accounts for frame-offset)
 
-    srl $t9, $v1, 8  # select subcolumn
-    srl $v1, $v1, 2  # get row with subcolumn part 2 (accounts for byte-offset)
+    sll $v0, $v0, 16
 
+    add $v0, $v0, $v1
 
-    sll $v0, $v0, 1  # get main column
-
-    and $v1, $v1, $t6  # subtract subcolumn from row
     
-
     jr $ra
-                add $v0, $v0, $t9  # add subcolumn to columns
+                buf $v0, $s0
 
 
    
