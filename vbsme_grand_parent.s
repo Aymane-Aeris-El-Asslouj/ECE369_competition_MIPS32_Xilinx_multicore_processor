@@ -27,6 +27,8 @@ vbsme_master:
 
     lbufa $v1, 0($v0)  # load row with subcolumn with frame and byte offset
 
+    lmin $s0, 0($zero)  # get min (same function always)
+
 
     srl $t8, $v1, 16  # load child core number
     sll $t8, $t8, 1

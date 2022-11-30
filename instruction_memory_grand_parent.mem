@@ -9,6 +9,7 @@ c8000003	//			lbufc	$zero, 3($zero) ->			lbufc	$zero, 3($zero)
 c8000004	//			lbufc	$zero, 4($zero) ->			lbufc	$zero, 4($zero)
 dc020000	//			ltag	$v0, 0($zero) ->			ltag	$v0, 0($zero)
 4c430000	//			lbufa	$v1, 0($v0) ->			lbufa	$v1, 0($v0)
+e4100000	//			lmin	$s0, 0($zero) ->			lmin	$s0, 0($zero)
 0003c402	//			srl	$t8, $v1, 16 ->			srl	$t8, $v1, 16
 0018c040	//			sll	$t8, $t8, 1 ->			sll	$t8, $t8, 1
 30637fff	//			andi	$v1, $v1, 32767 ->			andi	$v1, $v1, 32767

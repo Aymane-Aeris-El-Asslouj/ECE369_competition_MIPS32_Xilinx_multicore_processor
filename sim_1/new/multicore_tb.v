@@ -9,6 +9,7 @@
 module multicore_tb();
     reg Clk;
     reg Reset;
+    integer i =0;
 
 
     wire [31:0] out_v0, out_v1;
@@ -21,6 +22,18 @@ module multicore_tb();
 	
 	initial begin
 	   Reset <= 1;
+	   @(posedge Clk) #1;
+	   @(posedge Clk) #1;
+	   @(posedge Clk) #1;
+	   @(posedge Clk) #1;
+	   Reset <= 0;
+	   
+	   for(i =0; i < 500; i = i + 1) begin
+	       @(posedge Clk);
+	   end
+	   
+	   Reset <= 1;
+	   @(posedge Clk) #1;
 	   @(posedge Clk) #1;
 	   @(posedge Clk) #1;
 	   @(posedge Clk) #1;
