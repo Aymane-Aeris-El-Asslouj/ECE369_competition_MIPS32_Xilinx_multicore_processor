@@ -1,3 +1,4 @@
+
 `timescale 1ns / 1ps
 `default_nettype none
 
@@ -83,7 +84,7 @@ module DataMemory(EX_MEM_Address, EX_MEM_WriteData, Clk, EX_MEM_MemWrite, EX_MEM
 // ===============|===========|===========|===============|=============//
 // 19-36 | "36Kb" | 1024 | 10-bit | 4-bit //
 //////////////////////////////////////////////////////////////////////////
-BRAM_TDP_MACRO #(
+aeris_ram #(
 .BRAM_SIZE("36Kb"), // Target BRAM: "18Kb" or "36Kb"
 .DEVICE("7SERIES"), // Target device: "7SERIES"
 .DOA_REG(0), // Optional port A output register (0 or 1)

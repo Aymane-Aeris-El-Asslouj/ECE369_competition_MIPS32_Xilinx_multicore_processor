@@ -285,7 +285,7 @@ module Processor(input wire Clk, Reset,
     
         if(SAD_WB_RegWrite) begin
         
-            if(SAD_WB_WriteRegister == 32'd2)
+            if(SAD_WB_WriteRegister == 32'd16)
                  out_v0 <= WB_WriteData;
         
             if(SAD_WB_WriteRegister == 32'd3)
