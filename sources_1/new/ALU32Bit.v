@@ -32,7 +32,7 @@ module ALU32Bit(ALUControl, A, B, shamt,
             SLL: ALUResult <= B << shamt;
             SRL: ALUResult <= B >> shamt;
             SUB: ALUResult <= A - B;
-            // SLT: ALUResult <= (A < B);
+            SLT: ALUResult <= (A < B);
             // MUL: ALUResult <= A * B;
             NOR: ALUResult <= ~(A | B);
             default: ALUResult <= 32'bX;

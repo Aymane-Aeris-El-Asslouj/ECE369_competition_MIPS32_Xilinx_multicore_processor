@@ -12,15 +12,18 @@ module MultiCore(input wire Clk, Reset,
                 output wire [31:0] out_v1);
 localparam NUM_CHILDREN = 5;
 
-wire [30:0] R1, R;
+wire [30:0] R4, R3, R2, R1, R;
 
 
 genvar i;
 
 generate
     for(i=0; i < 31; i = i + 1) begin
-        ResetReg r(Clk, Reset, R1[i]);
-        ResetReg r2(Clk, R1[i], R[i]);
+        ResetReg r1(Clk, Reset, R4[i]);
+        ResetReg r2(Clk, R4[i], R3[i]);
+        ResetReg r3(Clk, R3[i], R2[i]);
+        ResetReg r4(Clk, R2[i], R1[i]);
+        ResetReg r5(Clk, R1[i], R[i]);
         //assign R[i] = Reset;
     end
 endgenerate
