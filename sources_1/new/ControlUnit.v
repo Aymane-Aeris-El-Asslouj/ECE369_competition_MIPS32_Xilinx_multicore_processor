@@ -1,8 +1,8 @@
 `timescale 1ns / 1ps
 `default_nettype none
 
-module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_SAD_RegWrite,
-                    EX_WriteRegister, EX_MEM_WriteRegister, MEM_SAD_WriteRegister,
+module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_SAD_RegWrite, SAD_SADD_RegWrite, SAD_SSAD_RegWrite,
+                    EX_WriteRegister, EX_MEM_WriteRegister, MEM_SAD_WriteRegister, SAD_SADD_WriteRegister, SAD_SSAD_WriteRegister,
                     
                     ID_frame_shift, ID_window_shift, ID_min_in, ID_buff,
                     
@@ -192,21 +192,25 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     // Hazard detection
     output wire ID_stall;
     
-    input wire ID_EX_RegWrite, EX_MEM_RegWrite, MEM_SAD_RegWrite;
-    input [4:0] EX_WriteRegister, EX_MEM_WriteRegister, MEM_SAD_WriteRegister;
+    input wire ID_EX_RegWrite, EX_MEM_RegWrite, MEM_SAD_RegWrite, SAD_SADD_RegWrite, SAD_SSAD_RegWrite;
+    input [4:0] EX_WriteRegister, EX_MEM_WriteRegister, MEM_SAD_WriteRegister, SAD_SADD_WriteRegister, SAD_SSAD_WriteRegister;
     
     
     assign ID_stall =   ((rs != 5'b0) 
                          & (
                         (ID_EX_RegWrite & (rs==EX_WriteRegister)) | 
                         (EX_MEM_RegWrite & (rs==EX_MEM_WriteRegister))| 
-                        (MEM_SAD_RegWrite & (rs==MEM_SAD_WriteRegister))
+                        (MEM_SAD_RegWrite & (rs==MEM_SAD_WriteRegister))| 
+                        (SAD_SADD_RegWrite & (rs==SAD_SADD_WriteRegister))| 
+                        (SAD_SSAD_RegWrite & (rs==SAD_SSAD_WriteRegister))
                         )& (~ID_JALControl))
                         | ((rt != 5'b0) 
                         & (
                         (ID_EX_RegWrite & (rt==EX_WriteRegister)) | 
                         (EX_MEM_RegWrite & (rt==EX_MEM_WriteRegister))| 
-                        (MEM_SAD_RegWrite & (rt==MEM_SAD_WriteRegister))
+                        (MEM_SAD_RegWrite & (rt==MEM_SAD_WriteRegister))| 
+                        (SAD_SADD_RegWrite & (rt==SAD_SADD_WriteRegister))| 
+                        (SAD_SSAD_RegWrite & (rt==SAD_SSAD_WriteRegister))
                         )
                          &(ID_R | ID_MemWrite | equality_branch | ID_frame_shift)) 
                          | (need_buff & (~all_buf_flags));

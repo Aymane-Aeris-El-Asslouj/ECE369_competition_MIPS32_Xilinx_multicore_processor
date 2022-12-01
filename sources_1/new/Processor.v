@@ -7,7 +7,8 @@
 
 
 module Processor(input wire Clk, Reset,
-                output reg [31:0] out_v0, out_v1, out_write_data,
+                output wire [31:0] out_v0, out_v1, 
+                output reg out_write_data,
                 output wire [31:0] out_PC, buf_val_1, buf_val_2,
                 output wire buf_flag,
                 
@@ -114,6 +115,57 @@ module Processor(input wire Clk, Reset,
         MEM_SAD_frame_shift, MEM_SAD_window_shift, MEM_SAD_min_in, MEM_SAD_load_min, MEM_SAD_load_min_tag})
     );
     
+    // Memory
+    wire [9:0] KA1, KA2, KA3, KA4, KB1, KB2, KB3, KB4;
+    
+    
+    wire [31:0] SAD_SADD_ReadData_A;
+    wire [4:0] SAD_SADD_WriteRegister;
+    wire [31:0] SAD_SADD_ALUResult;
+    wire SAD_SADD_RegWrite, SAD_SADD_MemRead;
+    wire SAD_SADD_frame_shift, SAD_SADD_window_shift, SAD_SADD_min_in,
+    SAD_SADD_load_min, SAD_SADD_load_min_tag;
+    
+    wire [9:0] SAD_SADD_KA1, SAD_SADD_KA2, SAD_SADD_KA3, SAD_SADD_KA4, SAD_SADD_KB1, SAD_SADD_KB2, SAD_SADD_KB3, SAD_SADD_KB4;
+    
+    PipeReg #(32+5+2+2+1+2+32+10*8) SAD_SADD(
+        .Clk(Clk),.Reset(Reset),
+        .stall(1'b0),
+        .flush(1'b0),
+        .in({MEM_SAD_ReadData_A, MEM_SAD_WriteRegister,MEM_SAD_ALUResult,MEM_SAD_RegWrite,MEM_SAD_MemRead,
+        MEM_SAD_frame_shift, MEM_SAD_window_shift, MEM_SAD_min_in, MEM_SAD_load_min, MEM_SAD_load_min_tag,
+        KA1, KA2, KA3, KA4, KB1, KB2, KB3, KB4}),
+        .out({SAD_SADD_ReadData_A, SAD_SADD_WriteRegister,SAD_SADD_ALUResult,SAD_SADD_RegWrite,SAD_SADD_MemRead,
+        SAD_SADD_frame_shift, SAD_SADD_window_shift, SAD_SADD_min_in, SAD_SADD_load_min, SAD_SADD_load_min_tag,
+        SAD_SADD_KA1, SAD_SADD_KA2, SAD_SADD_KA3, SAD_SADD_KA4, SAD_SADD_KB1, SAD_SADD_KB2, SAD_SADD_KB3, SAD_SADD_KB4})
+    );
+    
+    
+    
+    
+    wire [12:0] SAD_value_small_A, SAD_value_small_B;
+    
+    
+    wire [31:0] SAD_SSAD_ReadData_A;
+    wire [4:0] SAD_SSAD_WriteRegister;
+    wire [31:0] SAD_SSAD_ALUResult;
+    wire SAD_SSAD_RegWrite, SAD_SSAD_MemRead;
+    wire SAD_SSAD_frame_shift, SAD_SSAD_window_shift, SAD_SSAD_min_in,
+    SAD_SSAD_load_min, SAD_SSAD_load_min_tag;
+    wire [12:0] SAD_SSAD_value_small_A, SAD_SSAD_value_small_B;
+    
+    PipeReg #(32+5+2+2+1+2+32+13*2) SAD_SSAD(
+        .Clk(Clk),.Reset(Reset),
+        .stall(1'b0),
+        .flush(1'b0),
+        .in({SAD_SADD_ReadData_A, SAD_SADD_WriteRegister,SAD_SADD_ALUResult,SAD_SADD_RegWrite,SAD_SADD_MemRead,
+        SAD_SADD_frame_shift, SAD_SADD_window_shift, SAD_SADD_min_in, SAD_SADD_load_min, SAD_SADD_load_min_tag,
+        SAD_value_small_A, SAD_value_small_B}),
+        .out({SAD_SSAD_ReadData_A, SAD_SSAD_WriteRegister,SAD_SSAD_ALUResult,SAD_SSAD_RegWrite,SAD_SSAD_MemRead,
+        SAD_SSAD_frame_shift, SAD_SSAD_window_shift, SAD_SSAD_min_in, SAD_SSAD_load_min, SAD_SSAD_load_min_tag,
+        SAD_SSAD_value_small_A, SAD_SSAD_value_small_B})
+    );
+    
     // SAD
     wire [31:0] SAD_value;
     
@@ -129,7 +181,7 @@ module Processor(input wire Clk, Reset,
         .Clk(Clk),.Reset(Reset),
         .stall(1'b0),
         .flush(1'b0),
-        .in({MEM_SAD_ReadData_A,MEM_SAD_WriteRegister,MEM_SAD_ALUResult,MEM_SAD_RegWrite,MEM_SAD_MemRead, SAD_value, MEM_SAD_load_min_tag}),
+        .in({SAD_SSAD_ReadData_A,SAD_SSAD_WriteRegister,SAD_SSAD_ALUResult,SAD_SSAD_RegWrite,SAD_SSAD_MemRead, SAD_value, SAD_SSAD_load_min_tag}),
         .out({SAD_WB_ReadData,SAD_WB_WriteRegister,SAD_WB_ALUResult,SAD_WB_RegWrite,SAD_WB_MemRead, SAD_WB_value, SAD_WB_load_min_tag})
     );
     
@@ -158,12 +210,18 @@ module Processor(input wire Clk, Reset,
         .MEM_WB_RegWrite(SAD_WB_RegWrite),
         .IF_ID_PC4(IF_ID_PC4),
         .IF_ID_Instruction(IF_ID_Instruction),
+        
         .ID_EX_RegWrite(ID_EX_RegWrite),
         .EX_MEM_RegWrite(EX_MEM_RegWrite),
         .MEM_SAD_RegWrite(MEM_SAD_RegWrite),
+        .SAD_SADD_RegWrite(SAD_SADD_RegWrite),
+        .SAD_SSAD_RegWrite(SAD_SSAD_RegWrite),
+        
         .EX_WriteRegister(EX_WriteRegister),
         .EX_MEM_WriteRegister(EX_MEM_WriteRegister),
         .MEM_SAD_WriteRegister(MEM_SAD_WriteRegister),
+        .SAD_SADD_WriteRegister(SAD_SADD_WriteRegister),
+        .SAD_SSAD_WriteRegister(SAD_SSAD_WriteRegister),
         
         .ID_rs_val(ID_rs_val),
         .ID_rt_val(ID_rt_val),
@@ -193,7 +251,10 @@ module Processor(input wire Clk, Reset,
         .ID_load_buff_b(ID_load_buff_b),
         
         .ID_load_min(ID_load_min),
-        .ID_load_min_tag(ID_load_min_tag)
+        .ID_load_min_tag(ID_load_min_tag),
+        
+        .my_v0(out_v0),
+        .my_v1(out_v1)
     ); 
     
     ExecutionUnit p2(
@@ -214,6 +275,7 @@ module Processor(input wire Clk, Reset,
 
     MemoryUnit #(.memories(memories)) p3(
         .Clk(Clk),
+        .Reset(Reset),
         
         .EX_MEM_ALUResult(EX_MEM_ALUResult),
         .EX_MEM_rt_val(EX_MEM_rt_val),
@@ -235,18 +297,41 @@ module Processor(input wire Clk, Reset,
     
     SADUnit p4(
         .Clk(Clk),
-        .Reset(Reset),
         .MEM_SAD_ReadData_A(MEM_SAD_ReadData_A),
         .MEM_SAD_ReadData_B(MEM_SAD_ReadData_B),
         .frame_shift(MEM_SAD_frame_shift),
         .window_shift(MEM_SAD_window_shift),
-        .SAD_value(SAD_value),
-        .min_in(MEM_SAD_min_in),
-        .MEM_SAD_ALUResult(MEM_SAD_ALUResult),
-        .load_min(MEM_SAD_load_min)
+        .KA1(KA1),
+        .KA2(KA2),
+        .KA3(KA3),
+        .KA4(KA4),
+        .KB1(KB1),
+        .KB2(KB2),
+        .KB3(KB3),
+        .KB4(KB4)
         );
     
-    WriteBackUnit p5(
+    SADDUnit p5(SAD_SADD_KA1, SAD_SADD_KA2, SAD_SADD_KA3, SAD_SADD_KA4, SAD_SADD_KB1, SAD_SADD_KB2, SAD_SADD_KB3, SAD_SADD_KB4,
+     SAD_value_small_A, SAD_value_small_B);
+        
+        
+    
+    SSADUnit p6(
+        .Clk(Clk),
+        .Reset(Reset),
+        .MEM_SAD_ReadData_A(SAD_SSAD_ReadData_A),
+        .SAD_value_small_A(SAD_SSAD_value_small_A),
+        .SAD_value_small_B(SAD_SSAD_value_small_B),
+        .frame_shift(SAD_SSAD_frame_shift),
+        .window_shift(SAD_SSAD_window_shift),
+        .SAD_value(SAD_value),
+        .min_in(SAD_SSAD_min_in),
+        .MEM_SAD_ALUResult(SAD_SSAD_ALUResult),
+        .load_min(SAD_SSAD_load_min)
+        );
+        
+    
+    WriteBackUnit p7(
         .MEM_WB_ReadData(SAD_WB_ReadData),
         .MEM_WB_ALUResult(SAD_WB_ALUResult),
         .SAD_WB_value(SAD_WB_value),
@@ -276,24 +361,26 @@ module Processor(input wire Clk, Reset,
     
     end
     
-    initial begin
-        out_v0 <= 32'b0;
-        out_v1 <= 32'b0;
-    end
+   // assign my_stored = MEM_ReadData_A;
+//    initial begin
+//        out_v0 <= 32'h0;
+//        out_v1 <= 32'h0;
+//    end
     
-    always@(posedge Clk) begin
+//    always@(posedge Clk) begin
     
-        if(SAD_WB_RegWrite) begin
+//        if(SAD_WB_RegWrite) begin
         
-            if(SAD_WB_WriteRegister == 32'd16)
-                 out_v0 <= WB_WriteData;
+//            if(SAD_WB_WriteRegister == 5'd2)
+//            //if(SAD_WB_WriteRegister == 32'd2)
+//                 out_v0 <= WB_WriteData;
         
-            if(SAD_WB_WriteRegister == 32'd3)
-                 out_v1 <= WB_WriteData;
+//            if(SAD_WB_WriteRegister == 5'd16)
+//                 out_v1 <= WB_WriteData;
         
-        end
+//        end
     
-    end
+//    end
     
     
 endmodule

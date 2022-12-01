@@ -8,12 +8,14 @@ module MemoryUnit(EX_MEM_ALUResult, EX_MEM_rt_val, Clk, EX_MEM_MemWrite, EX_MEM_
                 
                 EX_MEM_load_buff_a, EX_MEM_load_buff_b,
                 buf_val_1_addr, buf_val_2_addr,
-                buf_val_1_select, buf_val_2_select
+                buf_val_1_select, buf_val_2_select,
+                
+                Reset
     );
     
     parameter memories = "none_2.mem";
     
-    input wire Clk, EX_MEM_MemWrite, EX_MEM_MemRead, EX_MEM_HalfControl, EX_MEM_ByteControl;
+    input wire Clk, EX_MEM_MemWrite, EX_MEM_MemRead, EX_MEM_HalfControl, EX_MEM_ByteControl, Reset;
     
     input wire EX_MEM_load_buff_a, EX_MEM_load_buff_b;
     
@@ -38,7 +40,8 @@ module MemoryUnit(EX_MEM_ALUResult, EX_MEM_rt_val, Clk, EX_MEM_MemWrite, EX_MEM_
         .MEM_ReadData_A(pseudo_ReadData_A),
         .MEM_ReadData_B(MEM_ReadData_B),
         .EX_MEM_HalfControl(EX_MEM_HalfControl),
-        .EX_MEM_ByteControl(EX_MEM_ByteControl)
+        .EX_MEM_ByteControl(EX_MEM_ByteControl),
+        .Reset(Reset)
     );
     
     assign buf_val_1_addr = EX_MEM_ALUResult[2:0];
@@ -52,6 +55,7 @@ module MemoryUnit(EX_MEM_ALUResult, EX_MEM_rt_val, Clk, EX_MEM_MemWrite, EX_MEM_
         end else begin
             MEM_ReadData_A <= pseudo_ReadData_A;
         end
+        //MEM_ReadData_A <= pseudo_ReadData_A;
     end
     
     

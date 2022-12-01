@@ -2,20 +2,19 @@
 `default_nettype none
 
 module SSADUnit(Clk, Reset, MEM_SAD_ReadData_A, MEM_SAD_ReadData_B,
-                frame_shift, window_shift, min_in, SAD_value, MEM_SAD_ALUResult, load_min);
+                frame_shift, window_shift, min_in, SAD_value, MEM_SAD_ALUResult, load_min,
+                SAD_value_small_A, SAD_value_small_B);
 
     input wire Clk, Reset;
     input wire [31:0] MEM_SAD_ReadData_A, MEM_SAD_ReadData_B, MEM_SAD_ALUResult;
     
     input wire frame_shift, window_shift, min_in, load_min;
     
-    wire [127:0] current_frame_A, current_frame_B, current_window;
     
-    wire [9:0] KA1, KA2, KA3, KA4, KB1, KB2, KB3, KB4;
     output reg [31:0] SAD_value;
     
     wire [31:0] min_stored, out_tag;
-    wire [12:0] SAD_value_small_A, SAD_value_small_B;
+    input wire [12:0] SAD_value_small_A, SAD_value_small_B;
     wire [12:0] out_stored;
     
     reg [31:0] tag_in;

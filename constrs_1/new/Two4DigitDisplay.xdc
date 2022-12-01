@@ -1,7 +1,10 @@
 ##Set clock frequency to 100 MHz. Helps guide the placement and routing algorithm
 ##to synthesize design that satisfies this constraint, and gives better power estimations
 ## 100 MHz frequency, 10 ns period,, duty cycle 50%, no phase shift
-create_clock -period 10 [get_ports Clk]
+create_clock  -name my_clk -period 10 [get_ports Clk]
+set_max_delay 8 -from [get_clocks my_clk] -to [get_clocks my_clk]
+set_max_delay 8 -from [get_clocks my_clk]
+set_max_delay 8 -to [get_clocks my_clk]
 
 ##This part is to assign a pin number to 100MHz clock signal
 set_property PACKAGE_PIN E3 [get_ports Clk]

@@ -2,8 +2,8 @@
 `default_nettype none
 
 module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteRegister,
-                            MEM_WB_RegWrite, IF_ID_PC4, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_SAD_RegWrite,
-                            EX_WriteRegister, EX_MEM_WriteRegister, MEM_SAD_WriteRegister,
+                            MEM_WB_RegWrite, IF_ID_PC4, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_SAD_RegWrite, SAD_SADD_RegWrite, SAD_SSAD_RegWrite,
+                            EX_WriteRegister, EX_MEM_WriteRegister, MEM_SAD_WriteRegister, SAD_SADD_WriteRegister, SAD_SSAD_WriteRegister,
                             
                             ID_frame_shift, ID_window_shift, ID_min_in, ID_buff,
                             
@@ -15,7 +15,10 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
                             ID_shamt, ID_R, ID_ALUControl,
                             ID_RegWrite, ID_MemWrite, ID_MemRead,
                             ID_HalfControl, ID_ByteControl, ID_JALControl,
-                            ID_PCSrc, ID_new_PC, ID_stall);
+                            ID_PCSrc, ID_new_PC, ID_stall,
+                            
+                            
+                            my_v0, my_v1);
                             
 
     input wire Clk;
@@ -23,21 +26,21 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
     
     output wire ID_stall;
     
-    input wire ID_EX_RegWrite, EX_MEM_RegWrite, MEM_SAD_RegWrite;
-    input [4:0] EX_WriteRegister, EX_MEM_WriteRegister, MEM_SAD_WriteRegister;
+    input wire ID_EX_RegWrite, EX_MEM_RegWrite, MEM_SAD_RegWrite, SAD_SADD_RegWrite, SAD_SSAD_RegWrite;
+    input wire [4:0] EX_WriteRegister, EX_MEM_WriteRegister, MEM_SAD_WriteRegister, SAD_SADD_WriteRegister, SAD_SSAD_WriteRegister;
     
     
-    input [31:0] IF_ID_Instruction, WB_WriteData, IF_ID_PC4;
-    input [4:0] MEM_WB_WriteRegister;
+    input wire [31:0] IF_ID_Instruction, WB_WriteData, IF_ID_PC4;
+    input wire [4:0] MEM_WB_WriteRegister;
     input wire MEM_WB_RegWrite;
     
     input wire all_buf_flags;
     
-    output [31:0] ID_rs_val, ID_rt_val;
+    output wire [31:0] ID_rs_val, ID_rt_val, my_v0, my_v1;
     output reg [31:0] ID_new_PC;
-    output [31:0] ID_ext_imm;
-    output [4:0] ID_rt, ID_rd, ID_shamt;
-    output [3:0] ID_ALUControl;
+    output wire [31:0] ID_ext_imm;
+    output wire [4:0] ID_rt, ID_rd, ID_shamt;
+    output wire [3:0] ID_ALUControl;
     output wire ID_R, ID_RegWrite, ID_MemWrite, ID_MemRead,
     ID_JALControl, ID_PCSrc, ID_HalfControl, ID_ByteControl;
     output wire ID_frame_shift, ID_window_shift, ID_min_in, ID_buff, ID_load_buff_a, ID_load_buff_b,
@@ -82,12 +85,18 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
         .JR(JR),
         .ID_JALControl(ID_JALControl),
         .CompareControl(CompareControl),
+        
         .ID_EX_RegWrite(ID_EX_RegWrite),
         .EX_MEM_RegWrite(EX_MEM_RegWrite),
         .MEM_SAD_RegWrite(MEM_SAD_RegWrite),
+        .SAD_SADD_RegWrite(SAD_SADD_RegWrite),
+        .SAD_SSAD_RegWrite(SAD_SSAD_RegWrite),
+        
         .EX_WriteRegister(EX_WriteRegister),
         .EX_MEM_WriteRegister(EX_MEM_WriteRegister),
         .MEM_SAD_WriteRegister(MEM_SAD_WriteRegister),
+        .SAD_SADD_WriteRegister(SAD_SADD_WriteRegister),
+        .SAD_SSAD_WriteRegister(SAD_SSAD_WriteRegister),
         .ID_stall(ID_stall),
         
         .ID_frame_shift(ID_frame_shift),
@@ -111,7 +120,9 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
         .WB_WriteData(WB_WriteData), 
         .MEM_WB_RegWrite(MEM_WB_RegWrite), 
         .inner_rs_val(inner_rs_val), 
-        .inner_rt_val(inner_rt_val)
+        .inner_rt_val(inner_rt_val),
+        .my_v0(my_v0),
+        .my_v1(my_v1)
     ); 
     
     assign inner_ext_imm = {{16{imm[15]}}, imm}; 
