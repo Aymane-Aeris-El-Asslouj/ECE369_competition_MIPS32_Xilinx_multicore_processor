@@ -1,12 +1,12 @@
 `timescale 1ns / 1ps
 `default_nettype none
 
-module SSADUnit(Clk, Reset, MEM_SAD_ReadData_A, MEM_SAD_ReadData_B,
-                frame_shift, window_shift, min_in, SAD_value, MEM_SAD_ALUResult, load_min,
+module SSADUnit(Clk, Reset, MEM_SAD_ReadData_A,
+                frame_shift, window_shift, min_in, SAD_value, MEM_SAD_ALUResult, MEM_SAD_ALUResult_2, load_min,
                 SAD_value_small_A, SAD_value_small_B);
 
     input wire Clk, Reset;
-    input wire [31:0] MEM_SAD_ReadData_A, MEM_SAD_ReadData_B, MEM_SAD_ALUResult;
+    input wire [31:0] MEM_SAD_ReadData_A, MEM_SAD_ALUResult, MEM_SAD_ALUResult_2;
     
     input wire frame_shift, window_shift, min_in, load_min;
     
@@ -28,7 +28,7 @@ module SSADUnit(Clk, Reset, MEM_SAD_ReadData_A, MEM_SAD_ReadData_B,
                 tag_in <= MEM_SAD_ALUResult;
             end else begin
                 min_input <= SAD_value_small_B;
-                tag_in <= MEM_SAD_ALUResult + 256;
+                tag_in <= MEM_SAD_ALUResult_2;
             end
         end else begin
             min_input <= MEM_SAD_ReadData_A[12:0];

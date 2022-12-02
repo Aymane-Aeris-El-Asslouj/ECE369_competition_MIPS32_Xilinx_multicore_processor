@@ -13,15 +13,24 @@ module CompareUnit(CompareControl, A, B, CompareResult);
 	input [2:0] CompareControl;
 	input signed [31:0] A, B;
 	output reg CompareResult;
+	
+	wire eq_me;
+	assign eq_me = A == B;
+	
+	//wire gz_me;
+	//assign gz_me = (A > 0);
+	
+	wire lz_me;
+	assign lz_me = (A < 0);
     
     always@(*) begin
         case(CompareControl)
-            GTZ: CompareResult <= (A > 0);
-            LTZ: CompareResult <= (A < 0);
-            GEZ: CompareResult <= (A >= 0);
-            LEZ: CompareResult <= (A <= 0);
-            EQ: CompareResult <= (A == B);
-            NEQ: CompareResult <= (A != B);
+            //GTZ: CompareResult <= gz_me;
+            LTZ: CompareResult <= lz_me;
+            GEZ: CompareResult <= ~lz_me;
+            //LEZ: CompareResult <= ~gz_me;
+            EQ: CompareResult <= eq_me;
+            NEQ: CompareResult <= ~eq_me;
             default: CompareResult <= 1'bX;
         endcase
     end

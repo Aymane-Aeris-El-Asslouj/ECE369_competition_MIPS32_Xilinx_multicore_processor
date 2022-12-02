@@ -9,13 +9,15 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
                             
                             all_buf_flags, ID_load_buff_a, ID_load_buff_b,
                             
-                            ID_load_min, ID_load_min_tag,
+                            ID_load_min, ID_load_min_tag, ID_special,
 
-                            ID_rs_val, ID_rt_val, ID_ext_imm, ID_rt, ID_rd,
+                            ID_rs_val, ID_rt_val, ID_ext_imm, ID_rs, ID_rt, ID_rd,
                             ID_shamt, ID_R, ID_ALUControl,
                             ID_RegWrite, ID_MemWrite, ID_MemRead,
                             ID_HalfControl, ID_ByteControl, ID_JALControl,
                             ID_PCSrc, ID_new_PC, ID_stall,
+                            
+                            EX_MEM_special, MEM_SAD_special, SAD_SADD_special, SAD_SSAD_special, ID_EX_special, 
                             
                             
                             my_v0, my_v1);
@@ -39,12 +41,14 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
     output wire [31:0] ID_rs_val, ID_rt_val, my_v0, my_v1;
     output reg [31:0] ID_new_PC;
     output wire [31:0] ID_ext_imm;
-    output wire [4:0] ID_rt, ID_rd, ID_shamt;
+    output wire [4:0] ID_rs, ID_rt, ID_rd, ID_shamt;
     output wire [3:0] ID_ALUControl;
     output wire ID_R, ID_RegWrite, ID_MemWrite, ID_MemRead,
     ID_JALControl, ID_PCSrc, ID_HalfControl, ID_ByteControl;
     output wire ID_frame_shift, ID_window_shift, ID_min_in, ID_buff, ID_load_buff_a, ID_load_buff_b,
-    ID_load_min, ID_load_min_tag;
+    ID_load_min, ID_load_min_tag, ID_special;
+    
+    input wire EX_MEM_special, MEM_SAD_special, SAD_SADD_special, SAD_SSAD_special, ID_EX_special;
     
     // Inner control signals for branching
     wire CompareResult;
@@ -109,7 +113,14 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
         .ID_load_buff_b(ID_load_buff_b),
         
         .ID_load_min(ID_load_min),
-        .ID_load_min_tag(ID_load_min_tag)
+        .ID_load_min_tag(ID_load_min_tag),
+        .ID_special(ID_special),
+        
+        .EX_MEM_special(EX_MEM_special),
+        .MEM_SAD_special(MEM_SAD_special),
+        .SAD_SADD_special(SAD_SADD_special),
+        .SAD_SSAD_special(SAD_SSAD_special),
+        .ID_EX_special(ID_EX_special)
     );
     
     RegisterFile d1(
@@ -128,6 +139,7 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
     assign inner_ext_imm = {{16{imm[15]}}, imm}; 
     assign ID_ext_imm = inner_ext_imm; 
     
+    assign ID_rs = rs;
     assign ID_rt = rt;
     assign ID_rs_val = bypass_rs_val;
     assign ID_rt_val = bypass_rt_val;

@@ -7,90 +7,14 @@ frame0:  .word    0
 main: 
     la      $a2, window0
     la      $a1, frame0
-    jal     vbsme
+    jal     vbsme_master
     self: j self
 
 .text
-.globl  vbsme
-vbsme:
+.globl  vbsme_master
+vbsme_master:
 
-    addi $t0, $zero, 256
-
-    # load window
-    SAD_A $zero, 12($a2)
-    SAD_A $zero, 8($a2)
-    SAD_A $zero, 4($a2)
-    SAD_A $zero, 0($a2)
-
-    # load end of last subframe for column 1
-    SAD_B $t0, 252($a1)
-    SAD_B $t0, 248($a1)
-    SAD_B $t0, 244($a1)
-
-    # load subframes and compute SAD min for column 1
-    SAD_C $t0, 244($a1)
-    SAD_C $t0, 240($a1)
-    SAD_C $t0, 236($a1)
-    SAD_C $t0, 232($a1)
-    SAD_C $t0, 228($a1)
-    SAD_C $t0, 224($a1)
-    SAD_C $t0, 220($a1)
-    SAD_C $t0, 216($a1)
-    SAD_C $t0, 212($a1)
-    SAD_C $t0, 208($a1)
-    SAD_C $t0, 204($a1)
-    SAD_C $t0, 200($a1)
-    SAD_C $t0, 196($a1)
-    SAD_C $t0, 192($a1)
-    SAD_C $t0, 188($a1)
-    SAD_C $t0, 184($a1)
-    SAD_C $t0, 180($a1)
-    SAD_C $t0, 176($a1)
-    SAD_C $t0, 172($a1)
-    SAD_C $t0, 168($a1)
-    SAD_C $t0, 164($a1)
-    SAD_C $t0, 160($a1)
-    SAD_C $t0, 156($a1)
-    SAD_C $t0, 152($a1)
-    SAD_C $t0, 148($a1)
-    SAD_C $t0, 144($a1)
-    SAD_C $t0, 140($a1)
-    SAD_C $t0, 136($a1)
-    SAD_C $t0, 132($a1)
-    SAD_C $t0, 128($a1)
-    SAD_C $t0, 124($a1)
-    SAD_C $t0, 120($a1)
-    SAD_C $t0, 116($a1)
-    SAD_C $t0, 112($a1)
-    SAD_C $t0, 108($a1)
-    SAD_C $t0, 104($a1)
-    SAD_C $t0, 100($a1)
-    SAD_C $t0, 96($a1)
-    SAD_C $t0, 92($a1)
-    SAD_C $t0, 88($a1)
-    SAD_C $t0, 84($a1)
-    SAD_C $t0, 80($a1)
-    SAD_C $t0, 76($a1)
-    SAD_C $t0, 72($a1)
-    SAD_C $t0, 68($a1)
-    SAD_C $t0, 64($a1)
-    SAD_C $t0, 60($a1)
-    SAD_C $t0, 56($a1)
-    SAD_C $t0, 52($a1)
-    SAD_C $t0, 48($a1)
-    SAD_C $t0, 44($a1)
-    SAD_C $t0, 40($a1)
-    SAD_C $t0, 36($a1)
-    SAD_C $t0, 32($a1)
-    SAD_C $t0, 28($a1)
-    SAD_C $t0, 24($a1)
-    SAD_C $t0, 20($a1)
-    SAD_C $t0, 16($a1)
-    SAD_C $t0, 12($a1)
-    SAD_C $t0, 8($a1)
-    SAD_C $t0, 4($a1)
-
-    lmin $t5, 0($zero)  # get self min
+    addi $t6, $zero, 63
 
     # get minimum of child core computations
     lbufc $zero, 0($zero)
@@ -98,27 +22,49 @@ vbsme:
     lbufc $zero, 2($zero)
     lbufc $zero, 3($zero)
     lbufc $zero, 4($zero)
+    lbufc $zero, 5($zero)
+    lbufc $zero, 6($zero)
+    lbufc $zero, 7($zero)
+    lbufc $zero, 8($zero)
+    lbufc $zero, 9($zero)
+    lbufc $zero, 10($zero)
+    lbufc $zero, 11($zero)
+    lbufc $zero, 12($zero)
+    lbufc $zero, 13($zero)
+    lbufc $zero, 14($zero)
+    lbufc $zero, 15($zero)
+    lbufc $zero, 16($zero)
+    lbufc $zero, 17($zero)
+    lbufc $zero, 18($zero)
+    lbufc $zero, 19($zero)
+    lbufc $zero, 20($zero)
+    lbufc $zero, 21($zero)
+    lbufc $zero, 22($zero)
+    lbufc $zero, 23($zero)
+    lbufc $zero, 24($zero)
+    lbufc $zero, 25($zero)
+    lbufc $zero, 26($zero)
+    lbufc $zero, 27($zero)
+    lbufc $zero, 28($zero)
+    lbufc $zero, 29($zero)
+    lbufc $zero, 30($zero)
 
-    lmin $s0, 0($zero)  # get min (same function always)
 
-    addi $v0, $zero, 5
+    ltag $v0, 0($zero)  # load half of main column
 
-    beq $t5, $s0, MECORE
-        ltag $v1, 0($zero)
-    ltag $v0, 0($zero)  # load child core number with min SAD
+    lmin $s0, 0($zero)  # load sum
+
     lbufa $v1, 0($v0)  # load row with subcolumn with frame and byte offset
-    MECORE:
 
-
-    sll $v0, $v0, 16
+    sll $v0, $v0, 1  # get main column
 
     sub $v1, $v1, $a1  # get row with subcolumn part 1 (accounts for frame-offset)
 
-    add $v0, $v0, $v1
+    srl $v1, $v1, 2  # get row with subcolumn part 2 (accounts for byte-offset)
+    srl $t9, $v1, 6  # select subcolumn
 
+    add $v0, $v0, $t9  # add subcolumn to columns
     
+
     jr $ra
-                buf $v0, $s0
-
-
-   
+          and $v1, $v1, $t6  # subtract subcolumn from row

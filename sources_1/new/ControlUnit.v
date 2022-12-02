@@ -8,7 +8,9 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
                     
                     all_buf_flags, ID_load_buff_a, ID_load_buff_b,
                     
-                    ID_load_min, ID_load_min_tag,
+                    ID_load_min, ID_load_min_tag, ID_special,
+                    
+                    EX_MEM_special, MEM_SAD_special, SAD_SADD_special, SAD_SSAD_special, ID_EX_special,
 
                     ID_ALUControl, ID_R, ID_RegWrite, ID_MemWrite,
                     ID_MemRead, ID_HalfControl, ID_ByteControl, branch,
@@ -96,7 +98,7 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     input wire all_buf_flags;
     
     output wire ID_R, ID_MemWrite, ID_RegWrite, ID_MemRead, branch;
-    output wire JR;
+    output wire JR, ID_special;
     output wire ID_HalfControl, ID_ByteControl, ID_JALControl;
     output reg [3:0] ID_ALUControl;
     output reg [2:0] CompareControl;
@@ -104,7 +106,7 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     output wire ID_frame_shift, ID_window_shift, ID_min_in, ID_buff, ID_load_buff_a, ID_load_buff_b,
     ID_load_min, ID_load_min_tag;
     
-    wire strict_branch, equality_branch, special;
+    wire strict_branch, equality_branch;
     
     wire need_buff;
 
@@ -162,12 +164,12 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     assign ID_load_min = (opcode == LMIN_OPCODE);
     assign ID_load_min_tag = (opcode == LTAG_OPCODE) | ID_load_min;
     
-    assign special = (opcode == SPECIAL);
+    assign ID_special = (opcode == SPECIAL);
     
-    assign ID_buff = special &(funct == BUF_FUNCT);
+    assign ID_buff = ID_special &(funct == BUF_FUNCT);
     assign need_buff = ID_load_buff_a | ID_load_buff_b;
     
-    assign ID_R = special | (opcode == SPECIAL2);
+    assign ID_R = ID_special | (opcode == SPECIAL2);
     
     assign ID_HalfControl = (opcode == SH_OPCODE) | (opcode == LH_OPCODE);
     assign ID_ByteControl = (opcode == SB_OPCODE) | (opcode == LB_OPCODE);
@@ -178,7 +180,7 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     
     assign ID_JALControl = (opcode == JAL_OPCODE);
     
-    assign JR = special & (funct == JR_FUNCT);
+    assign JR = ID_special & (funct == JR_FUNCT);
     
     assign strict_branch = (opcode == REGIMM) | (opcode == BGTZ_OPCODE) | (opcode == BLEZ_OPCODE);
     assign equality_branch = (opcode == BEQ_OPCODE) | (opcode == BNE_OPCODE);
@@ -196,21 +198,25 @@ module ControlUnit(opcode, funct, rs, rt, ID_EX_RegWrite, EX_MEM_RegWrite, MEM_S
     input [4:0] EX_WriteRegister, EX_MEM_WriteRegister, MEM_SAD_WriteRegister, SAD_SADD_WriteRegister, SAD_SSAD_WriteRegister;
     
     
+    input wire EX_MEM_special, MEM_SAD_special, SAD_SADD_special, SAD_SSAD_special, ID_EX_special;
+    
+    
+    
     assign ID_stall =   ((rs != 5'b0) 
                          & (
-                        (ID_EX_RegWrite & (rs==EX_WriteRegister)) | 
-                        (EX_MEM_RegWrite & (rs==EX_MEM_WriteRegister))| 
-                        (MEM_SAD_RegWrite & (rs==MEM_SAD_WriteRegister))| 
-                        (SAD_SADD_RegWrite & (rs==SAD_SADD_WriteRegister))| 
-                        (SAD_SSAD_RegWrite & (rs==SAD_SSAD_WriteRegister))
+                        (ID_EX_RegWrite & (rs==EX_WriteRegister) & (~(ID_EX_special & ID_special))) | 
+                        (EX_MEM_RegWrite & (rs==EX_MEM_WriteRegister) & (~(EX_MEM_special & ID_special)))| 
+                        (MEM_SAD_RegWrite & (rs==MEM_SAD_WriteRegister) & (~(MEM_SAD_special & ID_special)))| 
+                        (SAD_SADD_RegWrite & (rs==SAD_SADD_WriteRegister) & (~(SAD_SADD_special & ID_special)))| 
+                        (SAD_SSAD_RegWrite & (rs==SAD_SSAD_WriteRegister) & (~(SAD_SSAD_special & ID_special)))
                         )& (~ID_JALControl))
                         | ((rt != 5'b0) 
                         & (
-                        (ID_EX_RegWrite & (rt==EX_WriteRegister)) | 
-                        (EX_MEM_RegWrite & (rt==EX_MEM_WriteRegister))| 
-                        (MEM_SAD_RegWrite & (rt==MEM_SAD_WriteRegister))| 
-                        (SAD_SADD_RegWrite & (rt==SAD_SADD_WriteRegister))| 
-                        (SAD_SSAD_RegWrite & (rt==SAD_SSAD_WriteRegister))
+                        (ID_EX_RegWrite & (rt==EX_WriteRegister) & (~(ID_EX_special & ID_special))) | 
+                        (EX_MEM_RegWrite & (rt==EX_MEM_WriteRegister) & (~(EX_MEM_special & ID_special)))| 
+                        (MEM_SAD_RegWrite & (rt==MEM_SAD_WriteRegister) & (~(MEM_SAD_special & ID_special)))| 
+                        (SAD_SADD_RegWrite & (rt==SAD_SADD_WriteRegister) & (~(SAD_SADD_special & ID_special)))| 
+                        (SAD_SSAD_RegWrite & (rt==SAD_SSAD_WriteRegister) & (~(SAD_SSAD_special & ID_special)))
                         )
                          &(ID_R | ID_MemWrite | equality_branch | ID_frame_shift)) 
                          | (need_buff & (~all_buf_flags));

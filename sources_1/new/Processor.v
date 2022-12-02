@@ -12,7 +12,7 @@ module Processor(input wire Clk, Reset,
                 output wire [31:0] out_PC, buf_val_1, buf_val_2,
                 output wire buf_flag,
                 
-            output wire [2:0] buf_val_1_addr, buf_val_2_addr,
+            output wire [4:0] buf_val_1_addr, buf_val_2_addr,
             input wire [31:0] buf_val_1_select, buf_val_2_select,
             input wire all_buf_flags
                 );
@@ -38,36 +38,36 @@ module Processor(input wire Clk, Reset,
     
     // Instruction Decode
     wire [31:0] ID_rs_val, ID_rt_val, ID_ext_imm;
-    wire [4:0] ID_rt, ID_rd, ID_shamt;
+    wire [4:0] ID_rs, ID_rt, ID_rd, ID_shamt;
     wire [3:0] ID_ALUControl;
     wire ID_R, ID_RegWrite, ID_MemWrite, ID_MemRead;
     wire ID_JALControl, ID_HalfControl, ID_ByteControl, ID_stall;
     wire ID_frame_shift, ID_window_shift, ID_min_in, ID_buff, ID_load_buff_a, ID_load_buff_b,
-    ID_EX_load_min, ID_EX_load_min_tag;
+    ID_EX_load_min, ID_EX_load_min_tag, ID_special;
     
     wire [31:0] ID_new_PC;
     wire ID_PCSrc;
     
     wire [31:0] ID_EX_PC4, ID_EX_rs_val, ID_EX_rt_val, ID_EX_ext_imm;
-    wire [4:0] ID_EX_rt, ID_EX_rd, ID_EX_shamt;
+    wire [4:0] ID_EX_rs, ID_EX_rt, ID_EX_rd, ID_EX_shamt;
     wire [3:0] ID_EX_ALUControl;
     wire ID_EX_R, ID_EX_RegWrite, ID_EX_MemWrite, ID_EX_MemRead;
     wire ID_EX_JALControl, ID_EX_HalfControl, ID_EX_ByteControl;
     wire ID_EX_frame_shift, ID_EX_window_shift, ID_EX_min_in, ID_EX_load_buff_a, ID_EX_load_buff_b,
-    ID_load_min, ID_load_min_tag;
+    ID_load_min, ID_load_min_tag, ID_EX_special;
     
-    PipeReg #(32*4+5*3+4+7+2+2+1+2) ID_EX(
+    PipeReg #(32*4+5*3+4+7+2+2+1+2+1+5) ID_EX(
         .Clk(Clk),.Reset(Reset), 
         .stall(1'b0),
         .flush(ID_stall),
-        .in({ID_JALControl, IF_ID_PC4,ID_rs_val,ID_rt_val,ID_ext_imm,ID_rt,ID_rd,ID_shamt,ID_ALUControl,ID_R,
+        .in({ID_JALControl, IF_ID_PC4,ID_rs_val,ID_rt_val,ID_ext_imm,ID_rs,ID_rt,ID_rd,ID_shamt,ID_ALUControl,ID_R,
         ID_RegWrite,ID_MemWrite,ID_MemRead,ID_HalfControl,ID_ByteControl, ID_frame_shift, ID_window_shift, ID_min_in, 
         ID_load_buff_a, ID_load_buff_b,
-        ID_load_min, ID_load_min_tag}),
-        .out({ID_EX_JALControl, ID_EX_PC4,ID_EX_rs_val,ID_EX_rt_val,ID_EX_ext_imm,ID_EX_rt,ID_EX_rd,ID_EX_shamt,ID_EX_ALUControl,
+        ID_load_min, ID_load_min_tag, ID_special}),
+        .out({ID_EX_JALControl, ID_EX_PC4,ID_EX_rs_val,ID_EX_rt_val,ID_EX_ext_imm,ID_EX_rs,ID_EX_rt,ID_EX_rd,ID_EX_shamt,ID_EX_ALUControl,
         ID_EX_R,ID_EX_RegWrite,ID_EX_MemWrite,ID_EX_MemRead,
         ID_EX_HalfControl,ID_EX_ByteControl, ID_EX_frame_shift, ID_EX_window_shift, ID_EX_min_in, ID_EX_load_buff_a, ID_EX_load_buff_b,
-        ID_EX_load_min, ID_EX_load_min_tag})
+        ID_EX_load_min, ID_EX_load_min_tag, ID_EX_special})
     );
     
     
@@ -80,64 +80,65 @@ module Processor(input wire Clk, Reset,
     wire EX_MEM_MemRead, EX_MEM_MemWrite, EX_MEM_HalfControl;
     wire EX_MEM_ByteControl, EX_MEM_RegWrite;
     wire EX_MEM_frame_shift, EX_MEM_window_shift, EX_MEM_min_in, EX_MEM_load_buff_a, EX_MEM_load_buff_b,
-    EX_MEM_load_min, EX_MEM_load_min_tag;
+    EX_MEM_load_min, EX_MEM_load_min_tag, EX_MEM_special;
     
-    PipeReg #(5+32*2+5+2+2+1+2) EX_MEM(
+    PipeReg #(5+32*2+5+2+2+1+2+1) EX_MEM(
         .Clk(Clk),.Reset(Reset), 
         .stall(1'b0),
         .flush(1'b0),
         .in({EX_WriteRegister,EX_ALUResult,ID_EX_rt_val,ID_EX_MemRead,ID_EX_MemWrite,ID_EX_HalfControl,
         ID_EX_ByteControl,ID_EX_RegWrite, ID_EX_frame_shift, ID_EX_window_shift, ID_EX_min_in,
-        ID_EX_load_buff_a, ID_EX_load_buff_b, ID_EX_load_min, ID_EX_load_min_tag}),
+        ID_EX_load_buff_a, ID_EX_load_buff_b, ID_EX_load_min, ID_EX_load_min_tag, ID_EX_special}),
         .out({EX_MEM_WriteRegister,EX_MEM_ALUResult,EX_MEM_rt_val,EX_MEM_MemRead,EX_MEM_MemWrite,
         EX_MEM_HalfControl,EX_MEM_ByteControl,EX_MEM_RegWrite, EX_MEM_frame_shift, EX_MEM_window_shift, EX_MEM_min_in,
-        EX_MEM_load_buff_a, EX_MEM_load_buff_b, EX_MEM_load_min, EX_MEM_load_min_tag})
+        EX_MEM_load_buff_a, EX_MEM_load_buff_b, EX_MEM_load_min, EX_MEM_load_min_tag, EX_MEM_special})
     );
     
     // Memory
-    wire [31:0] MEM_ReadData_A, MEM_ReadData_B;
+    wire [31:0] MEM_ReadData_A, MEM_ReadData_B, MEM_Address_2;
     
     
-    wire [31:0] MEM_SAD_ReadData_A, MEM_SAD_ReadData_B;
+    wire [31:0] MEM_SAD_ReadData_A, MEM_SAD_ReadData_B, MEM_SAD_Address_2;
     wire [4:0] MEM_SAD_WriteRegister;
     wire [31:0] MEM_SAD_ALUResult;
     wire MEM_SAD_RegWrite, MEM_SAD_MemRead;
     wire MEM_SAD_frame_shift, MEM_SAD_window_shift, MEM_SAD_min_in,
-    MEM_SAD_load_min, MEM_SAD_load_min_tag;
+    MEM_SAD_load_min, MEM_SAD_load_min_tag, MEM_SAD_special;
     
-    PipeReg #(32*2+5+2+2+1+2+32) MEM_SAD(
+    PipeReg #(32*2+5+2+2+1+2+32+1+32) MEM_SAD(
         .Clk(Clk),.Reset(Reset),
         .stall(1'b0),
         .flush(1'b0),
         .in({MEM_ReadData_A, MEM_ReadData_B,EX_MEM_WriteRegister,EX_MEM_ALUResult,EX_MEM_RegWrite,EX_MEM_MemRead,
-        EX_MEM_frame_shift, EX_MEM_window_shift, EX_MEM_min_in, EX_MEM_load_min, EX_MEM_load_min_tag}),
+        EX_MEM_frame_shift, EX_MEM_window_shift, EX_MEM_min_in, EX_MEM_load_min, EX_MEM_load_min_tag, EX_MEM_special, MEM_Address_2}),
         .out({MEM_SAD_ReadData_A, MEM_SAD_ReadData_B,MEM_SAD_WriteRegister,MEM_SAD_ALUResult,MEM_SAD_RegWrite,MEM_SAD_MemRead,
-        MEM_SAD_frame_shift, MEM_SAD_window_shift, MEM_SAD_min_in, MEM_SAD_load_min, MEM_SAD_load_min_tag})
+        MEM_SAD_frame_shift, MEM_SAD_window_shift, MEM_SAD_min_in, MEM_SAD_load_min, MEM_SAD_load_min_tag, MEM_SAD_special, MEM_SAD_Address_2})
     );
     
     // Memory
     wire [9:0] KA1, KA2, KA3, KA4, KB1, KB2, KB3, KB4;
     
     
-    wire [31:0] SAD_SADD_ReadData_A;
+    wire [31:0] SAD_SADD_ReadData_A, SAD_SADD_Address_2;
     wire [4:0] SAD_SADD_WriteRegister;
     wire [31:0] SAD_SADD_ALUResult;
     wire SAD_SADD_RegWrite, SAD_SADD_MemRead;
     wire SAD_SADD_frame_shift, SAD_SADD_window_shift, SAD_SADD_min_in,
-    SAD_SADD_load_min, SAD_SADD_load_min_tag;
+    SAD_SADD_load_min, SAD_SADD_load_min_tag, SAD_SADD_special;
     
     wire [9:0] SAD_SADD_KA1, SAD_SADD_KA2, SAD_SADD_KA3, SAD_SADD_KA4, SAD_SADD_KB1, SAD_SADD_KB2, SAD_SADD_KB3, SAD_SADD_KB4;
     
-    PipeReg #(32+5+2+2+1+2+32+10*8) SAD_SADD(
+    PipeReg #(32+5+2+2+1+2+32+10*8+1+32) SAD_SADD(
         .Clk(Clk),.Reset(Reset),
         .stall(1'b0),
         .flush(1'b0),
         .in({MEM_SAD_ReadData_A, MEM_SAD_WriteRegister,MEM_SAD_ALUResult,MEM_SAD_RegWrite,MEM_SAD_MemRead,
         MEM_SAD_frame_shift, MEM_SAD_window_shift, MEM_SAD_min_in, MEM_SAD_load_min, MEM_SAD_load_min_tag,
-        KA1, KA2, KA3, KA4, KB1, KB2, KB3, KB4}),
+        KA1, KA2, KA3, KA4, KB1, KB2, KB3, KB4, MEM_SAD_special, MEM_SAD_Address_2}),
         .out({SAD_SADD_ReadData_A, SAD_SADD_WriteRegister,SAD_SADD_ALUResult,SAD_SADD_RegWrite,SAD_SADD_MemRead,
         SAD_SADD_frame_shift, SAD_SADD_window_shift, SAD_SADD_min_in, SAD_SADD_load_min, SAD_SADD_load_min_tag,
-        SAD_SADD_KA1, SAD_SADD_KA2, SAD_SADD_KA3, SAD_SADD_KA4, SAD_SADD_KB1, SAD_SADD_KB2, SAD_SADD_KB3, SAD_SADD_KB4})
+        SAD_SADD_KA1, SAD_SADD_KA2, SAD_SADD_KA3, SAD_SADD_KA4, SAD_SADD_KB1, SAD_SADD_KB2, SAD_SADD_KB3, SAD_SADD_KB4,
+        SAD_SADD_special, SAD_SADD_Address_2})
     );
     
     
@@ -146,24 +147,24 @@ module Processor(input wire Clk, Reset,
     wire [12:0] SAD_value_small_A, SAD_value_small_B;
     
     
-    wire [31:0] SAD_SSAD_ReadData_A;
+    wire [31:0] SAD_SSAD_ReadData_A, SAD_SSAD_Address_2;
     wire [4:0] SAD_SSAD_WriteRegister;
     wire [31:0] SAD_SSAD_ALUResult;
     wire SAD_SSAD_RegWrite, SAD_SSAD_MemRead;
     wire SAD_SSAD_frame_shift, SAD_SSAD_window_shift, SAD_SSAD_min_in,
-    SAD_SSAD_load_min, SAD_SSAD_load_min_tag;
+    SAD_SSAD_load_min, SAD_SSAD_load_min_tag, SAD_SSAD_special;
     wire [12:0] SAD_SSAD_value_small_A, SAD_SSAD_value_small_B;
     
-    PipeReg #(32+5+2+2+1+2+32+13*2) SAD_SSAD(
+    PipeReg #(32+5+2+2+1+2+32+13*2+1+32) SAD_SSAD(
         .Clk(Clk),.Reset(Reset),
         .stall(1'b0),
         .flush(1'b0),
         .in({SAD_SADD_ReadData_A, SAD_SADD_WriteRegister,SAD_SADD_ALUResult,SAD_SADD_RegWrite,SAD_SADD_MemRead,
         SAD_SADD_frame_shift, SAD_SADD_window_shift, SAD_SADD_min_in, SAD_SADD_load_min, SAD_SADD_load_min_tag,
-        SAD_value_small_A, SAD_value_small_B}),
+        SAD_value_small_A, SAD_value_small_B, SAD_SADD_special, SAD_SADD_Address_2}),
         .out({SAD_SSAD_ReadData_A, SAD_SSAD_WriteRegister,SAD_SSAD_ALUResult,SAD_SSAD_RegWrite,SAD_SSAD_MemRead,
         SAD_SSAD_frame_shift, SAD_SSAD_window_shift, SAD_SSAD_min_in, SAD_SSAD_load_min, SAD_SSAD_load_min_tag,
-        SAD_SSAD_value_small_A, SAD_SSAD_value_small_B})
+        SAD_SSAD_value_small_A, SAD_SSAD_value_small_B, SAD_SSAD_special, SAD_SSAD_Address_2})
     );
     
     // SAD
@@ -174,20 +175,28 @@ module Processor(input wire Clk, Reset,
     wire [31:0] SAD_WB_ALUResult;
     wire SAD_WB_RegWrite, SAD_WB_MemRead;
     wire [31:0] SAD_WB_value;
-    wire SAD_WB_load_min_tag;
+    wire SAD_WB_load_min_tag, SAD_WB_special;
     
     
-    PipeReg #(32*3+5+2+1) SAD_WB(
+    PipeReg #(32*3+5+2+1+1) SAD_WB(
         .Clk(Clk),.Reset(Reset),
         .stall(1'b0),
         .flush(1'b0),
-        .in({SAD_SSAD_ReadData_A,SAD_SSAD_WriteRegister,SAD_SSAD_ALUResult,SAD_SSAD_RegWrite,SAD_SSAD_MemRead, SAD_value, SAD_SSAD_load_min_tag}),
-        .out({SAD_WB_ReadData,SAD_WB_WriteRegister,SAD_WB_ALUResult,SAD_WB_RegWrite,SAD_WB_MemRead, SAD_WB_value, SAD_WB_load_min_tag})
+        .in({SAD_SSAD_ReadData_A,SAD_SSAD_WriteRegister,SAD_SSAD_ALUResult,SAD_SSAD_RegWrite,SAD_SSAD_MemRead, 
+        SAD_value, SAD_SSAD_load_min_tag, SAD_SSAD_special}),
+        .out({SAD_WB_ReadData,SAD_WB_WriteRegister,SAD_WB_ALUResult,SAD_WB_RegWrite,SAD_WB_MemRead, 
+        SAD_WB_value, SAD_WB_load_min_tag, SAD_WB_special})
     );
     
     
     // Write Back
     wire [31:0] WB_WriteData;
+    
+    
+    
+    // forwarding
+    
+    wire [31:0] forwarded_rs_val, forwarded_rt_val;
     
     
     InstructionFetchUnit #(.instructions(instructions)) p0(
@@ -226,6 +235,7 @@ module Processor(input wire Clk, Reset,
         .ID_rs_val(ID_rs_val),
         .ID_rt_val(ID_rt_val),
         .ID_ext_imm(ID_ext_imm), 
+        .ID_rs(ID_rs),
         .ID_rt(ID_rt),
         .ID_rd(ID_rd),
         .ID_ALUControl(ID_ALUControl),
@@ -252,16 +262,23 @@ module Processor(input wire Clk, Reset,
         
         .ID_load_min(ID_load_min),
         .ID_load_min_tag(ID_load_min_tag),
+        .ID_special(ID_special),
         
         .my_v0(out_v0),
-        .my_v1(out_v1)
+        .my_v1(out_v1),
+        
+        .EX_MEM_special(EX_MEM_special),
+        .MEM_SAD_special(MEM_SAD_special),
+        .SAD_SADD_special(SAD_SADD_special),
+        .SAD_SSAD_special(SAD_SSAD_special),
+        .ID_EX_special(ID_EX_special)
     ); 
     
     ExecutionUnit p2(
         .ID_EX_rt(ID_EX_rt),
         .ID_EX_rd(ID_EX_rd),
-        .ID_EX_rs_val(ID_EX_rs_val),
-        .ID_EX_rt_val(ID_EX_rt_val),
+        .ID_EX_rs_val(forwarded_rs_val),
+        .ID_EX_rt_val(forwarded_rt_val),
         .ID_EX_shamt(ID_EX_shamt),
         .ID_EX_ext_imm(ID_EX_ext_imm),
         .ID_EX_ALUControl(ID_EX_ALUControl),
@@ -292,7 +309,8 @@ module Processor(input wire Clk, Reset,
         .buf_val_2_select(buf_val_2_select),
         
         .MEM_ReadData_A(MEM_ReadData_A),
-        .MEM_ReadData_B(MEM_ReadData_B)
+        .MEM_ReadData_B(MEM_ReadData_B),
+        .MEM_Address_2(MEM_Address_2)
     );
     
     SADUnit p4(
@@ -327,6 +345,7 @@ module Processor(input wire Clk, Reset,
         .SAD_value(SAD_value),
         .min_in(SAD_SSAD_min_in),
         .MEM_SAD_ALUResult(SAD_SSAD_ALUResult),
+        .MEM_SAD_ALUResult_2(SAD_SSAD_Address_2),
         .load_min(SAD_SSAD_load_min)
         );
         
@@ -349,6 +368,36 @@ module Processor(input wire Clk, Reset,
               .out_1(buf_val_1),
               .out_2(buf_val_2),
               .flag(buf_flag));
+              
+              
+     ForwardingUnit f1(.EX_MEM_special(EX_MEM_special),
+                    .MEM_SAD_special(MEM_SAD_special),
+                    .SAD_SADD_special(SAD_SADD_special),
+                    .SAD_SSAD_special(SAD_SSAD_special),
+                    .SAD_WB_special(SAD_WB_special),
+                    .EX_MEM_WriteRegister(EX_MEM_WriteRegister),
+                    .MEM_SAD_WriteRegister(MEM_SAD_WriteRegister),
+                    .SAD_SADD_WriteRegister(SAD_SADD_WriteRegister),
+                    .SAD_SSAD_WriteRegister(SAD_SSAD_WriteRegister),
+                    .SAD_WB_WriteRegister(SAD_WB_WriteRegister),
+                    .ID_EX_rs(ID_EX_rs),
+                    .ID_EX_rt(ID_EX_rt),
+                    .EX_MEM_ALUResult(EX_MEM_ALUResult),
+                    .MEM_SAD_ALUResult(MEM_SAD_ALUResult),
+                    .SAD_SADD_ALUResult(SAD_SADD_ALUResult),
+                    .SAD_SSAD_ALUResult(SAD_SSAD_ALUResult),
+                     .SAD_WB_ALUResult(SAD_WB_ALUResult),
+                     .ID_EX_rs_val(ID_EX_rs_val),
+                    .ID_EX_rt_val(ID_EX_rt_val),
+                    .forwarded_rs_val(forwarded_rs_val),
+                     .forwarded_rt_val(forwarded_rt_val)
+                      );
+              
+              
+              
+              
+              
+              
     
     assign out_PC = IF_PC4 - 4;
     

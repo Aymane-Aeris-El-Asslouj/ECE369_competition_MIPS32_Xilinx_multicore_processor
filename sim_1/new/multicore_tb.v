@@ -17,7 +17,7 @@ module multicore_tb();
 
 	initial begin
 		Clk <= 1'b0;
-		forever #10 Clk <= ~Clk;
+		forever #5 Clk <= ~Clk;
 	end
 	
 	initial begin
