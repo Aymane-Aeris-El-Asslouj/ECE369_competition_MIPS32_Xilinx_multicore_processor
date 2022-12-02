@@ -20,7 +20,7 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
                             EX_MEM_special, MEM_SAD_special, SAD_SADD_special, SAD_SSAD_special, ID_EX_special, 
                             
                             
-                            my_v0, my_v1);
+                            my_v0, my_v1, my_s0);
                             
 
     input wire Clk;
@@ -38,7 +38,7 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
     
     input wire all_buf_flags;
     
-    output wire [31:0] ID_rs_val, ID_rt_val, my_v0, my_v1;
+    output wire [31:0] ID_rs_val, ID_rt_val, my_v0, my_v1, my_s0;
     output reg [31:0] ID_new_PC;
     output wire [31:0] ID_ext_imm;
     output wire [4:0] ID_rs, ID_rt, ID_rd, ID_shamt;
@@ -133,7 +133,8 @@ module InstructionDecodeUnit(Clk, IF_ID_Instruction, WB_WriteData, MEM_WB_WriteR
         .inner_rs_val(inner_rs_val), 
         .inner_rt_val(inner_rt_val),
         .my_v0(my_v0),
-        .my_v1(my_v1)
+        .my_v1(my_v1),
+        .my_s0(my_s0)
     ); 
     
     assign inner_ext_imm = {{16{imm[15]}}, imm}; 

@@ -12,8 +12,8 @@ module multicore_tb();
     integer i =0;
 
 
-    wire [31:0] out_v0, out_v1;
-    MultiCore t1(Clk, Reset, out_v0, out_v1); //, buf_val_1_s, buf_val_2_s, buf_flag_s);
+    wire [31:0] out_v0, out_v1, out_s0;
+    MultiCore t1(Clk, Reset, out_v0, out_v1, out_s0); //, buf_val_1_s, buf_val_2_s, buf_flag_s);
 
 	initial begin
 		Clk <= 1'b0;

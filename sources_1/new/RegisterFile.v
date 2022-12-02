@@ -4,7 +4,7 @@
 module RegisterFile(rs, rt, MEM_WB_WriteRegister, WB_WriteData, MEM_WB_RegWrite,
                     Clk, inner_rs_val, inner_rt_val,
                     
-                    my_v0, my_v1);
+                    my_v0, my_v1, my_s0);
 
 	/* Please fill in the implementation here... */
 	input [4:0] rs, rt, MEM_WB_WriteRegister; 
@@ -15,7 +15,7 @@ module RegisterFile(rs, rt, MEM_WB_WriteRegister, WB_WriteData, MEM_WB_RegWrite,
 	
 	
 	output wire [31:0] inner_rs_val, inner_rt_val;
-	output reg [31:0] my_v0, my_v1; 
+	output reg [31:0] my_v0, my_v1, my_s0; 
 	
     always@(posedge Clk) begin
 	   if(MEM_WB_RegWrite && (MEM_WB_WriteRegister != 5'b0)) begin
@@ -36,6 +36,8 @@ module RegisterFile(rs, rt, MEM_WB_WriteRegister, WB_WriteData, MEM_WB_RegWrite,
 	           my_v0 <= WB_WriteData; 
 	       if(MEM_WB_WriteRegister == 5'd3) 
 	           my_v1 <= WB_WriteData; 
+	       if(MEM_WB_WriteRegister == 5'd16) 
+	           my_s0 <= WB_WriteData; 
 	   end
 	end
 

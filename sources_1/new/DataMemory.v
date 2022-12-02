@@ -22,8 +22,8 @@ module DataMemory(Reset, EX_MEM_Address, EX_MEM_WriteData, Clk, EX_MEM_MemWrite,
     output wire [31:0] MEM_ReadData_A, MEM_ReadData_B; // Contents of memory location at Address
     wire [31:0] in_MEM_Address_2;
     assign in_MEM_Address_2 = EX_MEM_Address+EX_MEM_WriteData;
-    output wire [31:0] MEM_Address_2;
-    assign MEM_Address_2 = in_MEM_Address_2;
+    output wire [9:0] MEM_Address_2;
+    assign MEM_Address_2 = EX_MEM_WriteData[9:0];
     //reg [31:0] ReadWord; //ReadWord_2;
     
     //aeris_ram #(.memories(memories)) ab(Clk, EX_MEM_Address[9:2], EX_MEM_Address[9:2]+EX_MEM_WriteData[9:2], EX_MEM_WriteData, MEM_ReadData_A, MEM_ReadData_B, EX_MEM_MemWrite);    

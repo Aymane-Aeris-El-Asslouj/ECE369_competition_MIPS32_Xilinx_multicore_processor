@@ -50,21 +50,21 @@ vbsme_master:
     lbufc $zero, 30($zero)
 
 
-    ltag $v0, 0($zero)  # load half of main column
+    ltag $v1, 0($zero)  # load half of main column
 
     lmin $s0, 0($zero)  # load sum
 
-    lbufa $v1, 0($v0)  # load row with subcolumn with frame and byte offset
+    lbufa $v0, 0($v1)  # load row with subcolumn with frame and byte offset
 
-    sll $v0, $v0, 1  # get main column
+    sll $v1, $v1, 1  # get main column
 
-    sub $v1, $v1, $a1  # get row with subcolumn part 1 (accounts for frame-offset)
+    sub $v0, $v0, $a1  # get row with subcolumn part 1 (accounts for frame-offset)
 
-    srl $v1, $v1, 2  # get row with subcolumn part 2 (accounts for byte-offset)
-    srl $t9, $v1, 6  # select subcolumn
+    srl $v0, $v0, 2  # get row with subcolumn part 2 (accounts for byte-offset)
+    srl $t9, $v0, 6  # select subcolumn
 
-    add $v0, $v0, $t9  # add subcolumn to columns
+    add $v1, $v1, $t9  # add subcolumn to columns
     
 
     jr $ra
-          and $v1, $v1, $t6  # subtract subcolumn from row
+          and $v0, $v0, $t6  # subtract subcolumn from row

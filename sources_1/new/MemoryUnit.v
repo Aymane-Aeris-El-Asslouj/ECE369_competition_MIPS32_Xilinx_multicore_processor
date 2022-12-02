@@ -25,7 +25,8 @@ module MemoryUnit(EX_MEM_ALUResult, EX_MEM_rt_val, Clk, EX_MEM_MemWrite, EX_MEM_
     wire [31:0] pseudo_ReadData_A;
     
     output reg [31:0] MEM_ReadData_A;
-    output wire [31:0] MEM_ReadData_B, MEM_Address_2;
+    output wire [31:0] MEM_ReadData_B;
+    output wire [9:0] MEM_Address_2;
     
     
     output wire [4:0] buf_val_1_addr, buf_val_2_addr;

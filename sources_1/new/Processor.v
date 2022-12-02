@@ -7,7 +7,7 @@
 
 
 module Processor(input wire Clk, Reset,
-                output wire [31:0] out_v0, out_v1, 
+                output wire [31:0] out_v0, out_v1, out_s0,
                 output reg out_write_data,
                 output wire [31:0] out_PC, buf_val_1, buf_val_2,
                 output wire buf_flag,
@@ -95,17 +95,19 @@ module Processor(input wire Clk, Reset,
     );
     
     // Memory
-    wire [31:0] MEM_ReadData_A, MEM_ReadData_B, MEM_Address_2;
+    wire [31:0] MEM_ReadData_A, MEM_ReadData_B;
+    wire [9:0] MEM_Address_2;
     
     
-    wire [31:0] MEM_SAD_ReadData_A, MEM_SAD_ReadData_B, MEM_SAD_Address_2;
+    wire [31:0] MEM_SAD_ReadData_A, MEM_SAD_ReadData_B;
+    wire [9:0] MEM_SAD_Address_2;
     wire [4:0] MEM_SAD_WriteRegister;
     wire [31:0] MEM_SAD_ALUResult;
     wire MEM_SAD_RegWrite, MEM_SAD_MemRead;
     wire MEM_SAD_frame_shift, MEM_SAD_window_shift, MEM_SAD_min_in,
     MEM_SAD_load_min, MEM_SAD_load_min_tag, MEM_SAD_special;
     
-    PipeReg #(32*2+5+2+2+1+2+32+1+32) MEM_SAD(
+    PipeReg #(32*2+5+2+2+1+2+32+1+10) MEM_SAD(
         .Clk(Clk),.Reset(Reset),
         .stall(1'b0),
         .flush(1'b0),
@@ -119,7 +121,8 @@ module Processor(input wire Clk, Reset,
     wire [9:0] KA1, KA2, KA3, KA4, KB1, KB2, KB3, KB4;
     
     
-    wire [31:0] SAD_SADD_ReadData_A, SAD_SADD_Address_2;
+    wire [31:0] SAD_SADD_ReadData_A;
+    wire [9:0] SAD_SADD_Address_2;
     wire [4:0] SAD_SADD_WriteRegister;
     wire [31:0] SAD_SADD_ALUResult;
     wire SAD_SADD_RegWrite, SAD_SADD_MemRead;
@@ -128,7 +131,7 @@ module Processor(input wire Clk, Reset,
     
     wire [9:0] SAD_SADD_KA1, SAD_SADD_KA2, SAD_SADD_KA3, SAD_SADD_KA4, SAD_SADD_KB1, SAD_SADD_KB2, SAD_SADD_KB3, SAD_SADD_KB4;
     
-    PipeReg #(32+5+2+2+1+2+32+10*8+1+32) SAD_SADD(
+    PipeReg #(32+5+2+2+1+2+32+10*8+1+10) SAD_SADD(
         .Clk(Clk),.Reset(Reset),
         .stall(1'b0),
         .flush(1'b0),
@@ -147,7 +150,8 @@ module Processor(input wire Clk, Reset,
     wire [12:0] SAD_value_small_A, SAD_value_small_B;
     
     
-    wire [31:0] SAD_SSAD_ReadData_A, SAD_SSAD_Address_2;
+    wire [31:0] SAD_SSAD_ReadData_A;
+    wire [9:0] SAD_SSAD_Address_2;
     wire [4:0] SAD_SSAD_WriteRegister;
     wire [31:0] SAD_SSAD_ALUResult;
     wire SAD_SSAD_RegWrite, SAD_SSAD_MemRead;
@@ -155,7 +159,7 @@ module Processor(input wire Clk, Reset,
     SAD_SSAD_load_min, SAD_SSAD_load_min_tag, SAD_SSAD_special;
     wire [12:0] SAD_SSAD_value_small_A, SAD_SSAD_value_small_B;
     
-    PipeReg #(32+5+2+2+1+2+32+13*2+1+32) SAD_SSAD(
+    PipeReg #(32+5+2+2+1+2+32+13*2+1+10) SAD_SSAD(
         .Clk(Clk),.Reset(Reset),
         .stall(1'b0),
         .flush(1'b0),
@@ -266,6 +270,7 @@ module Processor(input wire Clk, Reset,
         
         .my_v0(out_v0),
         .my_v1(out_v1),
+        .my_s0(out_s0),
         
         .EX_MEM_special(EX_MEM_special),
         .MEM_SAD_special(MEM_SAD_special),

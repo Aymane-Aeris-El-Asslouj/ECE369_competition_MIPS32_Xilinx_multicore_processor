@@ -9,7 +9,7 @@
 
 module MultiCore(input wire Clk, Reset,
                 output wire [31:0] out_v0,
-                output wire [31:0] out_v1);
+                output wire [31:0] out_v1,out_s0);
 localparam NUM_CORES = 31;
 
 wire [NUM_CORES-1:0] buf_flag_s;
@@ -61,7 +61,7 @@ wire all_buf_flags;
 assign all_buf_flags = ((~buf_flag_s) == {NUM_CORES{1'b0}});
 
 Processor #(.memories("data_memory_parent.mem"), .instructions("instruction_memory_parent.mem")) c_m(.Clk(Clk),.Reset(Reset),
-            .out_v0(out_v0),.out_v1(out_v1),.out_write_data(),.out_PC(),
+            .out_v0(out_v0),.out_v1(out_v1),.out_s0(out_s0),.out_write_data(),.out_PC(),
             .buf_val_1_addr(buf_val_1_addr),
             .buf_val_2_addr(buf_val_2_addr),
             .buf_val_1_select(buf_val_1_select),
